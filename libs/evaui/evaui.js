@@ -1,8 +1,8 @@
 /*!
- * EvaUI v1.0.0
+ * EvaUI
+ * https://github.com/gittitanweb/ui.eva
  */
 
- 
 if (typeof jQuery === 'undefined') {
   throw new Error('Для работы EvaUI, необходимо прежде загрузить библиотеку JQuery');
 }
@@ -14,62 +14,77 @@ if (typeof jQuery === 'undefined') {
   }
 }(jQuery);
 
-if (typeof Twig === 'undefined') {
-  throw new Error('Для работы EvaUI, необходимо прежде загрузить библиотеку Twig');
-}
-
 ;(function( $, window ){
-    
-	var defaults = {    
+
+	var defaults = {
+
         // Отгрузка каркасов
-        getTplDownload : '/helper/get_tpl_data',        
+        getTplDownload : '/helper/get_tpl_data',
+
         // Конфигурация сайта
-        urlGetConfig : '/helper/getConfigurations',        
+        urlGetConfig : '/helper/getConfigurations',
+
         // Языковые настройки сайта
-        urlGetLang : '/helper/getLanguageSettings',        
-        // Избранное :: Еллемент для окраски
-        dom_favoritesIcon : '.event-favorites-btn',        
-        // Избранное :: Еллемент для вывода кол-ва эллементов в избранном
-        dom_fvrCount : '.event-favorites-count',        
-        // Избранное :: Еллемент для вывода кол-ва эллементов в избранном( Если ноль )
-        dom_fvrCount_empty : '0',        
-        // Корзина :: Еллемент для вывода кол-ва наименований
-        dom_cartCount : '.countShiping',        
-        // Корзина :: Еллемент для вывода кол-ва наименований( Если ноль )
-        dom_cartCount_empty : '0',        
-        // Корзина :: Еллемент для вывода кол-ва товаров
-        dom_cartCountProducts : false,        
-        // Корзина :: Еллемент для вывода кол-ва товаров( Если ноль )
-        dom_cartCountProducts_empty : '0',        
-        // Корзина :: Еллемент для вывода общей стоимости
-        dom_cartAllPrice : false,        
-        // Корзина :: Еллемент для вывода общей стоимости( Если ноль )
+        urlGetLang : '/helper/getLanguageSettings',
+
+        // Избранное :: Елемент для окраски в избранном
+        dom_favoritesIcon : '.event-favorites-btn',
+
+        // Избранное :: Еллемент для вывода кол-ва элементов в избранном
+        dom_fvrCount : '.event-favorites-count',
+
+        // Избранное :: Елемент для вывода кол-ва элементов в избранном( Если ноль )
+        dom_fvrCount_empty : '0',
+
+        // Корзина :: Елемент для вывода кол-ва наименований
+        dom_cartCount : '.countShiping',
+
+        // Корзина :: Елемент для вывода кол-ва наименований( Если ноль )
+        dom_cartCount_empty : '0',
+
+        // Корзина :: Елемент для вывода кол-ва товаров
+        dom_cartCountProducts : false,
+
+        // Корзина :: Елемент для вывода кол-ва товаров( Если ноль )
+        dom_cartCountProducts_empty : '0',
+
+        // Корзина :: Елемент для вывода общей стоимости
+        dom_cartAllPrice : false,
+
+        // Корзина :: Елемент для вывода общей стоимости( Если ноль )
         dom_cartAllPrice_empty : '',
-        
+
         // Что сделать после того как товар был добавлен в корзину
-        callback_cart_added : function( listing ){
+        callback_cart_added : function( listing )
+        {
             helpers.alert('success', 'Вы успешно обновили содержимое корзины!');
             CART.header_update();
         },
-        
+
         // Что сделать после того как товар был удалён из корзины
         callback_cart_removed : function( listing ){
             helpers.alert('success', 'Вы успешно обновили содержимое корзины!');
             CART.header_update();
         },
-        
+
         // Нужный функционал
-        plugins : ['events', 'configurations', 'tpl', 'cart', 'favorites'],
-        
+        plugins : [
+            'events',
+            'configurations',
+            'tpl',
+            'cart',
+            'favorites'
+        ],
+
         render_css : true,
         render_css_setting : {
-            
+
             // Настройки файла стилей
             params : {
                 all : '1',
                 param : []
             },
-            
+
             // Адаптивная сетка
             responsive : [
                 { w : '',       s : 'all'},
@@ -79,79 +94,86 @@ if (typeof Twig === 'undefined') {
                 { w : '-lg-',   s : '(min-width:992px)'},
                 { w : '-xl-',   s : '(min-width:1200px)'}
             ],
-            
+
             // Настройка классов
-            classes : [            
-                { name : 'px',    action : 'font-size: ',       min : 8, max : 70,      step_one_max : 1,     step_value : 1,   step_size : 1  },    
+            classes : [
+                { name : 'px',    action : 'font-size: ',       min : 8, max : 70,      step_one_max : 1,     step_value : 1,   step_size : 1  },
                 { name : 'h',     action : 'height: ',          min : 0, max : 900,     step_one_max : 30,    step_value : 1,   step_size : 10 },
                 { name : 'w',     action : 'width: ',           min : 0, max : 1200,    step_one_max : 30,    step_value : 1,   step_size : 10 },
-            
+
                 { name : 'mih',   action : 'min-height: ',      min : 0, max : 900,     step_one_max : 10,    step_value : 1,   step_size : 10 },
                 { name : 'miw',   action : 'min-width: ',       min : 0, max : 1200,    step_one_max : 10,    step_value : 1,   step_size : 10 },
-            
+
                 { name : 'mah',   action : 'max-height: ',      min : 0, max : 900,     step_one_max : 10,    step_value : 1,   step_size : 10 },
                 { name : 'maw',   action : 'max-width: ',       min : 0, max : 1200,    step_one_max : 10,    step_value : 1,   step_size : 10 },
-                
+
                 { name : 'ma',    action : 'margin: ',          min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
                 { name : 'mt',    action : 'margin-top: ',      min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
                 { name : 'mb',    action : 'margin-bottom: ',   min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
                 { name : 'ml',    action : 'margin-left: ',     min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
                 { name : 'mr',    action : 'margin-right: ',    min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
-            
+
                 { name : 'pa',    action : 'padding: ',         min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
                 { name : 'pt',    action : 'padding-top: ',     min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
                 { name : 'pb',    action : 'padding-bottom: ',  min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
                 { name : 'pl',    action : 'padding-left: ',    min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
                 { name : 'pr',    action : 'padding-right: ',   min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
-                
-                { name : 'lh',    action : 'line-height: ',     min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 }                
+
+                { name : 'lh',    action : 'line-height: ',     min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+
+                { name : 't',    action : 'top: ',     min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'b',    action : 'bottom: ',  min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'l',    action : 'left: ',    min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'r',    action : 'right: ',   min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 }
             ]
-            
+
         }
-        
-	};   
-    
-	$.fn.EvaUI = function( options ){	
-        
-        if( this.length > 1 ){
+
+	};
+
+	$.fn.EvaUI = function( options )
+    {
+
+        if( this.length > 1 )
+        {
             throw new Error('EvaUI, необходимо вызвать лишь единожды, не чаще!');
-            return false;	
+            return false;
         }
 
 		var THIS = this;
         var Eva = {};
-                
+
         // Суперглобальный объект
         window.GLOBAL = {
-            
+
             CONFIG : {}, // Параметры конфигурации сайта
-            
+
             LANG : {}, // Языковые настройки
-            
+
             USER : {}, // Данные авторизационного пользовтеля
-            
+
             URL : window.location.origin,
-            
+
             config_libs_path : '',
             config_scripts_path : '',
             config_styles_path : '',
             config_images_path : '',
             config_views_path : '',
             threme_folders : ''
-            
+
         };
-        
-        // Родительский эллемент для AJAX манипуляций
+
+        // Родительский элемент для AJAX манипуляций
         window.DOM = {
             parent : ' body '
         };
-        
+
         // Для установки региональных событий
-        window.Ev = {}; 
-        
+        window.Ev = {};
+
         // Обьект для хранения промежуточных данных
-        window.MEM = {}; 
-                    
+        window.MEM = {};
+
         // Готовность модулей к сотрудничеству
         window.READY = {
             helpers : false,
@@ -161,94 +183,116 @@ if (typeof Twig === 'undefined') {
             tpl : false,
             configurations : false
         };
-        
+
 		// Иннициализация Евы
-		var init = function(){ 
+		var init = function(){
+
+            // Обьединение настроек
 			Eva.sett = $.extend( defaults, options );
+
+            // Загрузка и установка модулей
             setup();
-            
-            if( Eva.sett.render_css !== false ){
+
+            // Рендеринг вспомагательных классов
+            if( Eva.sett.render_css !== false )
+            {
                 render_css();
             }
-            
-		};	
-        
-        // Установка событий
-        var setup = function(){
-            
+
+		};
+
+        // Установка
+        var setup = function()
+        {
+
             mod_helpers();
             READY.helpers = true;
-            
+
             if( Eva.sett.plugins.indexOf( 'events' ) != -1 ){
                 mod_events();
                 READY.events = true;
             }
-            
+
             if( Eva.sett.plugins.indexOf( 'configurations' ) != -1 ){
                 mod_configurations();
                 READY.configurations = true;
             }
-            
-            if( Eva.sett.plugins.indexOf( 'tpl' ) != -1 ){
+
+            if( Eva.sett.plugins.indexOf( 'tpl' ) != -1 && typeof Twig !== 'undefined' )
+            {
                 mod_tpl();
                 READY.tpl = true;
             }
-            
+
             if( Eva.sett.plugins.indexOf( 'cart' ) != -1 ){
                 mod_cart();
                 READY.cart = true;
             }
-            
+
             if( Eva.sett.plugins.indexOf( 'favorites' ) != -1 ){
                 mod_favorites();
                 READY.favorites = true;
             }
-            
+
         };
-                
+
         // Загрузка модуля инструментариев
-        var mod_helpers = function(){
+        var mod_helpers = function()
+        {
             window.helpers = {}; // Инструментарий ( Набор полезных функций )
             window.helpers = {
-                    
+
                 // извлеч только цифры из строки
-                getNumeric : function( string ){
+                getNumeric : function( string )
+                {
                     return parseInt(string.replace(/\D+/g,""));
                 },
-                
+
                 // Найти значение в массиве
-                in_array : function (value, array, index, response){
+                in_array : function (value, array, index, response)
+                {
                     var response = response || false;
                     var index = index || false;
-                    for(var i = 0; i < array.length; i++){
+                    for(var i = 0; i < array.length; i++)
+                    {
                         var variabled = (!index)?array[i]:array[i][index];
-                        if(variabled == value){
-                            if(response){
+                        if(variabled == value)
+                        {
+                            if(response)
+                            {
                                 return array[i];
-                            }else{
+                            }
+                            else
+                            {
                                 return true;
                             }
-                        } 
+                        }
                     }
                     return false;
                 },
-                
+
                 // Найти значение в массиве
-                helper_id_ids : function ( array, index, unic ){
+                helper_id_ids : function ( array, index, unic )
+                {
                     var response = [];
-                    for(var i = 0; i < array.length; i++){
+                    for(var i = 0; i < array.length; i++)
+                    {
                         var variabled = array[i][index];
-                        if( unic ){
-                            if( !helpers.in_array( variabled, response, false, false ) ){
+                        if( unic )
+                        {
+                            if( !helpers.in_array( variabled, response, false, false ) )
+                            {
                                 response.push( variabled );
                             }
-                        }else{
+                        }
+                        else
+                        {
                             response.push( variabled );
                         }
                     }
                     return response;
                 },
-                
+
                 // Найти и вернуть индекс результата поиска
                 inKey_array : function( value, array, index, response){
                     var response = response || false;
@@ -261,11 +305,11 @@ if (typeof Twig === 'undefined') {
                             }else{
                                 return true;
                             }
-                        } 
+                        }
                     }
                     return false;
                 },
-                
+
                 // Собрать в массиве нужные данные
                 query_array : function (value, array, index){
                     var complete = complete || false;
@@ -278,7 +322,7 @@ if (typeof Twig === 'undefined') {
                     }
                     return new_arr;
                 },
-                
+
                 // Найти данные и что то сделать с результатом
                 procedure_array : function( value, array, index, complete ){
                     var complete = complete || false;
@@ -287,11 +331,11 @@ if (typeof Twig === 'undefined') {
                         var variabled = (!index)?array[i]:array[i][index];
                         if(variabled === value){
                             complete(array[i]);
-                        } 
+                        }
                     }
                     return false;
                 },
-                
+
                 // Найти и удалить значение из масива
                 remove_array : function( value, array, index ){
                     var complete = complete || false;
@@ -306,12 +350,12 @@ if (typeof Twig === 'undefined') {
                     array.splice(irem, 1);
                     return array;
                 },
-                
+
                 // Получить дату unixtimestamp
                 _get_date : function (){
                     return Math.round(new Date().getTime()/1000.0);
                 },
-                
+
                 // Проверить поле на соответствие
                 validate : function ( type, string ){
                     if(type == 'email'){
@@ -369,7 +413,7 @@ if (typeof Twig === 'undefined') {
                         return pattern.test(string);
                     }
                 },
-                
+
                 // Обвести красным эллемент формы на некоторое время
                 formDanger : function( selector, sec, option ){
                     var sec = sec || 5000;
@@ -379,7 +423,7 @@ if (typeof Twig === 'undefined') {
                         $( selector ).css('outline', 'none');
                     }, sec);
                 },
-                
+
                 // Прелоадер
                 preload : function( change ){
                     var change = change || false;
@@ -391,12 +435,12 @@ if (typeof Twig === 'undefined') {
                         $( blockLoader ).addClass( hiddenClass );
                     }
                 },
-                
+
                 // Уведомление
-                alert : function ( type, mess, completed ){        
+                alert : function ( type, mess, completed ){
                     var completed = completed || false;
                     var type = type || 'error';
-                    var mess = mess || 'Системная ошибка';        
+                    var mess = mess || 'Системная ошибка';
                     if( type === 'success' ){
                         window.toastr.options = {
                             closeButton : true,
@@ -412,9 +456,9 @@ if (typeof Twig === 'undefined') {
                             hideEasing : "linear",
                             showMethod : "fadeIn",
                             hideMethod : "fadeOut"
-                        };            
+                        };
                         window.toastr.success( mess );
-                        if( completed ) completed();            
+                        if( completed ) completed();
                     }
                     if( type === 'error' ){
                         window.toastr.options = {
@@ -431,12 +475,12 @@ if (typeof Twig === 'undefined') {
                             hideEasing : "linear",
                             showMethod : "fadeIn",
                             hideMethod : "fadeOut"
-                        };            
+                        };
                         window.toastr.error( mess );
                         if( completed ) completed();
                     }
                 },
-                    
+
                 // Сформатировать цену
                 price_format : function ( _number, separ, decpo, decim ){
                     var decimal = decim || 2;
@@ -451,17 +495,17 @@ if (typeof Twig === 'undefined') {
                     r = ( rr[1]? b+ decpoint +rr[1]:b );
                     return format_string.replace('#', r);
                 },
-                
+
                 // Установить урл в браузере
                 _set_url : function( string ){
                     history.pushState(null, null, window.location.protocol +'//' + window.location.host + string );
                 },
-                
+
                 // Установить свой тайтл
                 _set_title : function( string ){
                     $('title').html( string );
                 },
-                
+
                 // Получить рандомную строку
                 _get_rand : function(){
                     var result = '';
@@ -472,10 +516,10 @@ if (typeof Twig === 'undefined') {
                         result = result + words.substring(position, position + 1);
                     }
                     var a = new Date().getTime();
-                    var b = Math.floor(Date.now() / 1000); 
+                    var b = Math.floor(Date.now() / 1000);
                     return result + b;
                 },
-                
+
                 // ДД/ММ/ГГГГ_ЧЧ:ММ:СС to Unix
                 _get_date_is_string : function ( date ){
                     var d = {
@@ -535,7 +579,7 @@ if (typeof Twig === 'undefined') {
 
                     var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
                     var o1, o2, o3, h1, h2, h3, h4, bits, i=0, enc='';
-                    do { 
+                    do {
                             o1 = data.charCodeAt(i++);
                             o2 = data.charCodeAt(i++);
                             o3 = data.charCodeAt(i++);
@@ -588,7 +632,7 @@ if (typeof Twig === 'undefined') {
                     } while (i < data.length);
                     return enc;
                 },
-                
+
                 // Найти и удалить из массива и вернуть обновленный массив
                 remove_array : function( value, array, index, callback ){
                     var callback = callback || false;
@@ -599,7 +643,7 @@ if (typeof Twig === 'undefined') {
                         var variabled = (!index)?array[i]:array[i][index];
                         if(variabled !== value){
                             narr.push(array[i]);
-                        } 
+                        }
                     }
                     if(callback){
                         callback ( narr );
@@ -607,7 +651,7 @@ if (typeof Twig === 'undefined') {
                         return narr;
                     }
                 },
-                
+
                 // Раобрать GET параметры на компоненты
                 GET_parse: function (query) {
                     var pars = (query != null ? query : "").replace(/&+/g, "&").split('&'),
@@ -630,12 +674,12 @@ if (typeof Twig === 'undefined') {
                     }
                     return params;
                 },
-                
+
                 // Вырезать все теги из строки
                 clear_tag : function ( t ){
                     return t.replace(/<\/?[^>]+>/g,'');
                 },
-                
+
                 // Установить КУКУ
                 set_cookie : function ( name, value, lavel ){
                     var lav = lavel || 30;
@@ -645,12 +689,12 @@ if (typeof Twig === 'undefined') {
                     });
                     return true;
                 },
-                
+
                 // Получить КУКУ
                 get_cookie : function ( name ){
                     return ($.cookie(name))?$.cookie(name):false;
                 },
-                
+
                 // Удалить КУКУ
                 remove_cookie : function ( name ){
                     $.cookie(name, null, {
@@ -658,7 +702,7 @@ if (typeof Twig === 'undefined') {
                         path: "/"
                     });
                 },
-                
+
                 // Разобрать УРЛ на компоненты
                 parseURL : function ( url ){
                     url = url || {};
@@ -676,7 +720,7 @@ if (typeof Twig === 'undefined') {
                     url_ret.hash = parts[10] || "";
                     return url_ret;
                 },
-                
+
                 // Конвертировать значение в строку - что бы это небыло
                 _convert_value : function ( value ){
                     var to = this._type_of(value);
@@ -686,7 +730,7 @@ if (typeof Twig === 'undefined') {
                         return false;
                     }
                 },
-                
+
                 _type_of : function ( math ){
                     var _typeof = 'string';
                     if(typeof math === 'function') _typeof = 'function';
@@ -694,7 +738,7 @@ if (typeof Twig === 'undefined') {
                     if(typeof math === 'number') _typeof = 'number';
                     return _typeof;
                 },
-                
+
                 _value_convert : function ( _value , _typeof ){
                     var response = _value;
                         if(_typeof === 'function') response = $.toJSON(_value);
@@ -702,15 +746,18 @@ if (typeof Twig === 'undefined') {
                         if(_typeof === 'number') response = _value;
                     return response;
                 }
-                
+
             };
         };
-        
+
         // Загрузка и запуск событий
-        var mod_events = function(){
+        var mod_events = function()
+        {
             window.events = {}; // Для глобальных событий
-            window.events = {
-                
+            const module = await import('modules/events.js');
+
+            /*window.events = {
+
                 link: function () {
 
                     $(document).off('click', '*[click]');
@@ -723,7 +770,7 @@ if (typeof Twig === 'undefined') {
 						catch(er){
 							console.log( er );
 						}
-                        
+
                     });
                     $(document).on('click', 'a[href^="#"]', function (e) {
                         e.preventDefault();
@@ -743,7 +790,7 @@ if (typeof Twig === 'undefined') {
                     }, 1000);
                     $(document).off('click', '[unload]');
                     $(document).on('click', '[unload]', function () {
-                        
+
 						try{
 							eval('window.' + $(this).attr('unload'));
 						}
@@ -831,29 +878,30 @@ if (typeof Twig === 'undefined') {
 
                 }
 
-            };
+            };*/
 
             window.events.link();
             window.events.unload();
             window.events.form_action();
-            
+
         };
-        
+
         // Загрузка конфигураций и языковых настроек
-        var mod_configurations = function(){
-                        
+        var mod_configurations = function()
+        {
+
             window.configurations = {
-                
+
                 getConfig : function(){
                     if( !sessionStorage.getItem('config') ){
                         return false;
                     }else if( sessionStorage.getItem('config') ){
-                        var _config = sessionStorage.getItem('config'); 
+                        var _config = sessionStorage.getItem('config');
                         window.GLOBAL.CONFIG = $.parseJSON( _config );
                         return true;
                     }
                 },
-                
+
                 uploadConfig : function(){
                     $.get( Eva.sett.urlGetConfig , function( config ) {
                         window.GLOBAL.CONFIG = config;
@@ -867,17 +915,17 @@ if (typeof Twig === 'undefined') {
                         return true;
                     }, "json");
                 },
-                
+
                 getLang : function(){
                     if( !sessionStorage.getItem('lang') ){
                         return false;
                     }else if( sessionStorage.getItem('lang') ){
-                        var _config = sessionStorage.getItem('lang'); 
+                        var _config = sessionStorage.getItem('lang');
                         window.GLOBAL.LANG = $.parseJSON( _config );
                         return true;
                     }
                 },
-                
+
                 uploadLang : function(){
                     $.get( Eva.sett.urlGetLang , function( response ) {
                         window.GLOBAL.LANG = response;
@@ -885,9 +933,9 @@ if (typeof Twig === 'undefined') {
                         return true;
                     }, "json");
                 }
-            
+
             };
-            
+
             if( window.configurations.getLang() !== true ){
                 window.configurations.uploadLang();
             }
@@ -895,16 +943,17 @@ if (typeof Twig === 'undefined') {
             if( window.configurations.getConfig() !== true ){
                 window.configurations.uploadConfig();
             }
-            
+
         };
-        
+
         // Модуль для работы с шаблонами
-        var mod_tpl = function(){
+        var mod_tpl = function()
+        {
             window.TPL = false; // Помощьник для работы с шаблонизатором
             window.MEM['TPL'] = { tpl_list : [] };
-            
+
             window.TPL = {
-                
+
                 GET_TPL: function (_NAME_, _DATA_, _RESPONSE_) {
 
                     var _name_ = _NAME_ || false;
@@ -971,14 +1020,15 @@ if (typeof Twig === 'undefined') {
                 }
 
             };
-            
+
         };
-        
+
         // Модуль для работы с карзиной заказов
-        var mod_cart = function(){
+        var mod_cart = function()
+        {
             window.CART = false; // Работа с корзиной заказов
             window.CART = {
-                    
+
                 // Сервисная информация
                 service_data : function(){
                     var items = {
@@ -999,12 +1049,12 @@ if (typeof Twig === 'undefined') {
                     }
                     return items;
                 },
-                
+
                 // Обновляет табло информации
                 header_update: function () {
-                    
+
                     var items = this.service_data();
-                    
+
                     // Кол-во наименований
                     if (  Eva.sett.dom_cartCount !== false ) {
                         if( items.tovarov > 0 ){
@@ -1013,7 +1063,7 @@ if (typeof Twig === 'undefined') {
                             $( Eva.sett.dom_cartCount ).text( Eva.sett.dom_cartCount_empty );
                         }
                     }
-                    
+
                     // Кол-во товаров
                     if (  Eva.sett.dom_cartCountProducts !== false ) {
                         if( items.counts > 0 ){
@@ -1022,7 +1072,7 @@ if (typeof Twig === 'undefined') {
                             $( Eva.sett.dom_cartCountProducts ).text( Eva.sett.dom_cartCountProducts_empty );
                         }
                     }
-                    
+
                     // Общая сумма
                     if (  Eva.sett.dom_cartAllPrice !== false ) {
                         if( items.prices_cop > 0 ){
@@ -1031,9 +1081,9 @@ if (typeof Twig === 'undefined') {
                             $( Eva.sett.dom_cartAllPrice ).text( Eva.sett.dom_cartAllPrice_empty );
                         }
                     }
-                    
+
                 },
-                
+
                 // Список товаров в хранилище
                 list: function ( callFnc ) {
                     var callFnc = callFnc || false;
@@ -1070,7 +1120,7 @@ if (typeof Twig === 'undefined') {
                     },
                     orig : {} // Дополнительные данные
                     --
-                */    
+                */
                 add: function ( AddItem ) {
 
                     var AddItem = AddItem || false;
@@ -1111,13 +1161,13 @@ if (typeof Twig === 'undefined') {
                                         }
                                         issetQTY = true;
                                     }
-                                    
+
                                     if (issetQTY === false) {
                                         list[key].qty = 1;
                                     }
-                                    
+
                                     math = 1;
-                                    
+
                                 }
                             }
                         }
@@ -1145,18 +1195,18 @@ if (typeof Twig === 'undefined') {
 
                         localStorage.setItem('cart', window.helpers._convert_value(list));
                         this.header_update();
-                        
+
                         Eva.sett.callback_cart_added( list );
 
                     }
                 },
-                
+
                 // Удаление товара из хранилища
                 remove: function ( ID, callFnc ) {
                     var callFnc = callFnc || false;
                     var list = this.list(false);
                     var newList = [];
-                    
+
                     if (list.length > 0) {
                         for (var key in list) {
                             var val = list[key];
@@ -1168,14 +1218,14 @@ if (typeof Twig === 'undefined') {
                         this.header_update();
                         Eva.sett.callback_cart_removed( newList );
                     }
-                    
+
                     if (callFnc) {
                         callFnc( newList );
                     } else {
                         return newList;
                     }
                 },
-                
+
                 // Обновление кол-ва едениц
                 updateCount: function ( ID, count, callFnc ) {
 
@@ -1207,14 +1257,14 @@ if (typeof Twig === 'undefined') {
                     }
                     this.header_update();
                 },
-                
+
                 // Очистить всю корзину
                 removeAll: function ( callFnc ) {
                     var callFnc = callFnc || false;
                     var list = [];
                     localStorage.setItem('cart', window.helpers._convert_value(list));
                     this.header_update();
-                    helpers.alert('success', 'Корзина пустая'); 
+                    helpers.alert('success', 'Корзина пустая');
                     if (callFnc) {
                         callFnc( []);
                     } else {
@@ -1225,20 +1275,21 @@ if (typeof Twig === 'undefined') {
             };
 
         };
-        
+
         // Модуль для работы со списком избранных товаров
-        var mod_favorites = function(){
-        
+        var mod_favorites = function()
+        {
+
             window.FAVORITES = false;
-            
+
             window.FAVORITES = {
-            
+
                 // Список избранных эллементов
                 LIST : [],
-                
+
                 // Окрасить индикатор-иконку
                 updateFavoritesActive: function(){
-                    var LIST = this.list();                    
+                    var LIST = this.list();
                     var e = setInterval(function(){
                         if( $( Eva.sett.dom_favoritesIcon ).length ){
                             clearInterval(e);
@@ -1248,9 +1299,9 @@ if (typeof Twig === 'undefined') {
                                 $( Eva.sett.dom_favoritesIcon ).removeClass('active');
                             }
                         }
-                    }, 20);                    
+                    }, 20);
                 },
-                
+
                 // Пометить индикаторы на странице
                 updateCheckFavorites : function(){
                     var LIST = this.list();
@@ -1262,30 +1313,30 @@ if (typeof Twig === 'undefined') {
                                 var check = helpers.in_array( Number($(e).attr('data-favorites-id')), LIST, 'essence_id', false);
                                 if( check ){
                                     $(e).addClass('favorites-checked');
-                                }                                          
-                            });        
+                                }
+                            });
                             if (  Eva.sett.dom_fvrCount !== false ) {
                                 if( LIST.length > 0 ){
                                     $( Eva.sett.dom_fvrCount ).text( LIST.length );
                                 }else{
                                     $( Eva.sett.dom_fvrCount ).text( Eva.sett.dom_fvrCount_empty );
                                 }
-                            } 
+                            }
                         }
-                    }, 20);       
+                    }, 20);
                 },
-                
+
                 // Добавить / Убрать из избранного
                 checkChange : function( id, type ){
                     var checked = $( DOM.parent + ' .event-favorites-check[data-favorites-id="'+id+'"]').hasClass('favorites-checked');
                     if( checked !== false ){
                         // Есть в избраном = убрать его оттуда
                         $( DOM.parent + ' .event-favorites-check[data-favorites-id="'+id+'"]').removeClass('favorites-checked');
-                        FAVORITES.remove( id, function(){                   
+                        FAVORITES.remove( id, function(){
                             if( Ev.favorites ){
                                 Ev.favorites.update_list();
-                            }                    
-                        });                
+                            }
+                        });
                     }else{
                         // Нет в избраном = добавить его туда
                         $( DOM.parent + ' .event-favorites-check[data-favorites-id="'+id+'"]').addClass('favorites-checked');
@@ -1293,18 +1344,18 @@ if (typeof Twig === 'undefined') {
                             FAVORITES.updateCheckFavorites();
                         });
                     }
-                    
+
                     FAVORITES.updateFavoritesActive();
                     FAVORITES.updateCheckFavorites();
-                    
+
                 },
-                
+
                 // Создание контейнера
                 create : function(){
                     if( ! localStorage.getItem('favorites') )  localStorage.setItem('favorites', '[]');
-                    this.LIST = localStorage.getItem('favorites'); 
+                    this.LIST = localStorage.getItem('favorites');
                 },
-                
+
                 // Полчить список обьектов
                 list : function(){
                     this.create();
@@ -1315,11 +1366,11 @@ if (typeof Twig === 'undefined') {
                             var val = ARRAY_LIST[key];
                             var x = ( window.helpers._type_of(val) === 'object')?val:$.parseJSON(val);
                             response.push(x);
-                        } 
+                        }
                     }
                     return response;
                 },
-                
+
                 // Добавить обьект в избранное
                 add : function ( type, essence_id, callback ){
                     var callback = callback || false;
@@ -1337,9 +1388,9 @@ if (typeof Twig === 'undefined') {
                         callback( essence_id );
                     }else{
                         return true;
-                    }    
+                    }
                 },
-                
+
                 // Удалить обьект из избранного
                 remove : function ( essence_id, callback ){
                     var callback = callback || false;
@@ -1350,26 +1401,27 @@ if (typeof Twig === 'undefined') {
                         callback( essence_id );
                     }else{
                         return true;
-                    }                
+                    }
                 }
-                
+
             };
 
             FAVORITES.updateFavoritesActive();
             FAVORITES.updateCheckFavorites();
-            
+
         };
-        
+
         // Создать CSS и загрузить его
-        render_css = function(){
+        var render_css = function()
+        {
             var sett = Eva.sett.render_css_setting;
-            
+
             var responsive = sett.responsive;
             var classes = sett.classes;
             var br = "";
             var t = '';
             var c = sett.params;
-            
+
             for (var k in responsive) {
                 var v = responsive[k];
                 t += ' @media ' + v.s + '{ ';
@@ -1380,21 +1432,24 @@ if (typeof Twig === 'undefined') {
                             while( i <= cl.max ){
                                 t += [".eva .", cl.name, v.w,  i, "{ ", cl.action,  i, "px !important; }", br].join('');
                                 i = ( cl.step_size == 1 ) ? i+1 : ( i < cl.step_one_max ) ? i+cl.step_value : i + cl.step_size;
-                            } 
+                            }
                         }
                     }
                 t += '}' + br;
-            }                
-            
+            }
+
             t += ' .eva .outline{outline:1px solid silver;}.eva .select_none{user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;-webkit-touch-callout:none;-webkit-user-select:none;}.eva .italic{font-style:italic;}.eva .fw100{font-weight:100;}.eva .fw200{font-weight:200;}.eva .fw300{font-weight:300;}.eva .fw400{font-weight:400;}.eva .fw500{font-weight:500;}.eva .fw600{font-weight:600;}.eva .fw700{font-weight:700;}.eva .fw800{font-weight:800;}.eva .fw900{font-weight:900;}.eva .up_text{text-transform:uppercase;}.eva .underline{text-decoration:underline;}.eva .hover_underline:hover{cursor:pointer;text-decoration:underline;}.eva .cut_text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-bottom:3px;}.eva .pointer:hover{cursor:pointer;}.eva .ovhidden{overflow:hidden;}.eva .ovauto{overflow:auto;} ';
-            
+
             $( 'head' ).append('<style>' + t + '</style>');
             $( 'body' ).addClass('eva');
         };
-        
+
+        // Запуск инициализации
     	init();
+
+        // Возвращение обекта
     	return this;
-      
+
     };
-    
+
 }( jQuery, window ));
