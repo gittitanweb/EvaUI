@@ -1,0 +1,33 @@
+
+    html{
+        overflow-x: hidden;
+    }
+
+    html, body{
+        height: 100%;
+        background: @set[white];
+    }
+
+    ol, ul, dl {
+        margin-bottom: 0 !important;
+    }
+
+    a{ color: @set[info] inherit !important; }
+    a:active{ color: @set[info] inherit !important; }
+    a:hover{ color: @set[primary] inherit !important; }
+    a:focus, a:hover {color: inherit;}
+
+    .animated { animation-duration: 0.3s; }
+
+    h1, h2, h3, h4, h5, h6,
+    p, span, div, small, status,
+    label, select, input, textarea,
+    td, tr, table,
+    a, link, button{
+        font-family: @fontFamilyName;
+        color: @set[dark];
+    }
+
+    input:focus {
+        outline: none !important;
+    }

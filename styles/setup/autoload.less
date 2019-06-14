@@ -1,0 +1,50 @@
+/**
+*    @Описание: Стандартный набор автозагрузки разного рода помощников в определённой последовательности
+*    @Предназначение: Возможность установить только те компоненты - которые необходимы для работы
+*    ----------
+*    @Eva ui-framevork --- https://github.com/gittitanweb/ui.eva
+**/
+    // Цветовые настройки
+    @import 'color.less';
+
+    // Настройки адаптации
+    @import 'responsive.less';
+
+    // Перезагрузк стандартных стилей браузера
+    @import '../helpers/normalize.less';
+
+    // Компоненты Bootstrap 4
+    @import '../bootstrap/reboot.less';
+    @import '../bootstrap/grid-12';
+    @import '../bootstrap/form';
+    @import '../bootstrap/buttons';
+    @import '../bootstrap/groups';
+    @import '../bootstrap/dropdown';
+    @import '../bootstrap/popover';
+    @import '../bootstrap/tooltype';
+    @import '../bootstrap/modal';
+    @import '../bootstrap/badge';
+    @import '../bootstrap/pagination';
+    @import '../bootstrap/breadcrumb';
+    @import '../bootstrap/nav';
+    @import '../bootstrap/navbar';
+    @import '../bootstrap/display';
+    @import '../bootstrap/flex';
+    @import '../bootstrap/float';
+    @import '../bootstrap/text';
+
+    // Стилизация элементов форм
+    @import 'forms.less';
+
+    // Адаптивные таблицы
+    //@import '../helpers/table_responsive';
+    @import '../helpers/table_responsive2';
+
+    // Загрузка помощников
+    @import '../helpers/tool';
+
+    // Классы для создаия анимации
+    // @import '../helpers/animation.css';
+
+    // Авто-генерация кнопок, фоновых изображений и текста
+    @import '../helpers/render';

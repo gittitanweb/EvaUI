@@ -1,0 +1,29 @@
+<div class="tw-products">
+	
+	<div class="tw-block_search">
+		<input type="text" class="" value="" placeholder="ИД, Артикул, Наименование товара для поиска">
+	</div>
+	
+	<div class="tw-block_listing">	
+		<p class="pa5 mb1">
+			<span class="ff-ms-300 px15 pl10">#325</span> 
+			<span class="ff-ms-300 px15 pl10">213546</span> 
+			<span class="px15 pl10">Товар 1</span> 
+			<a href="#">
+				<i class="fa fa-plus float-right pa5 mr5 px13"></i>
+			</a>
+		</p>		
+	</div>
+	
+	<div class="tw-block_result">
+		<p class="pa5 mb1">
+			<span class="ff-ms-300 px15 pl10">#325</span> 
+			<span class="ff-ms-300 px15 pl10">213546</span> 
+			<span class="px15 pl10">Товар 1</span> 
+			<a href="#">
+				<i class="fa fa-trash float-right pa5 mr5 px13"></i>
+			</a>
+		</p>
+	</div>
+	
+</div>

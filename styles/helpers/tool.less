@@ -1,0 +1,161 @@
+/**
+*    Заготовки пользовательских полезных функций, исполненных в виде классов
+*    ----------
+*    @Eva ui-framevork --- https://github.com/gittitanweb/ui.eva
+**/
+
+    // Debug-helper
+    .outline{ outline:1px solid @set[gray]; }
+
+    // Стилизация оерёдности элементов в списке
+    .btbrod > *:nth-child(2n+1){
+        background: rgba(0,0,0,0.03);
+    }
+
+    // fonts-helper
+    .italic{font-style:italic;}
+    .fw100{font-weight:100;}
+    .fw200{font-weight:200;}
+    .fw300{font-weight:300;}
+    .fw400{font-weight:400;}
+    .fw500{font-weight:500;}
+    .fw600{font-weight:600;}
+    .fw700{font-weight:700;}
+    .fw800{font-weight:800;}
+    .fw900{font-weight:900;}
+
+    // Позаимствование цвета текста у родительского элемента
+    .color_inherit, .color-inherit, .col_inh{color: inherit !important;}
+
+    // Отключить возможность выделять текст
+    .select_none {
+        user-select:none;
+        -khtml-user-select:none;
+        -moz-user-select:none;
+        -ms-user-select:none;
+        -webkit-touch-callout:none;
+        -webkit-user-select:none;
+    }
+
+    // Стилизация редактируемый текст
+    *[contenteditable="true"]:focus {
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.1);
+        padding: 2px 12px;
+        cursor: revert;
+    }
+
+    // Срезать текст
+    .cut_text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-bottom:3px;}
+
+    // Вид курсора
+    .pointer:hover{cursor:pointer;}
+
+    // Скроллинг
+    .ovhidden{overflow:hidden;}
+    .ovauto{overflow:auto;}
+
+    // Стиль обрамления
+    .bor-solid{ border-style: solid; }
+    .bor-dashed{ border-style: dashed; }
+    .bor-none{ border: medium none; }
+
+    // Прозрачность
+    .col-transparent{ color: transparent; }
+    .bg-transparent{ background: transparent; }
+
+    // Подчёркивание текста и ссылок
+    .dec-none, .dec-none:active, .dec-none:hover{text-decoration: none;}
+    .underline{text-decoration:underline;}
+    .hover_underline:hover{cursor:pointer;text-decoration:underline;}
+
+    // Позиционирование
+    .align-baseline {vertical-align: baseline;}
+    .align-top {vertical-align: top;}
+    .align-middle {vertical-align: middle;}
+    .align-bottom {vertical-align: bottom;}
+    .align-text-bottom {vertical-align: text-bottom;}
+    .align-text-top { vertical-align: text-top; }
+
+    .pos-absolute, .pos-abs{position: absolute;}
+    .pos-relative, .pos-rel{position: relative;}
+    .pos-fixed, .pos-fix{position: fixed;}
+    .pos-static, .pos-sta{position: static;}
+
+    // Сброс плавающих элементов
+    .clearfix, .clearfix::after {display: block;content: "";clear: both;}
+
+    // Анимация
+    .transition-none * { transition: none !important; }
+    .transition * { transition: all linear 0.2s; }
+    .transition-1 * { transition: all linear 0.4s; }
+    .transition-2 * { transition: all linear 0.6s; }
+
+    // Тень элемента
+    .box-shadow-none{ box-shadow: none !important; }
+    .box-shadow-1{ box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.09); }
+    .box-shadow-2:hover{ box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.09); }
+    .box-shadow-3{ box-shadow: 0 9px 14px -10px rgba(0,0,0,0.06); }
+
+    // Фиксация вверху
+    .fixed-top {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+    }
+
+    // Фиксация внизу
+    .fixed-bottom {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1030;
+    }
+
+    // Размерность в процентах
+    .w-100 {width: 100%;}
+    .h-100 {height: 100%;}
+    .w-100max {max-width: 100%;}
+    .h-100max {max-height: 100%;}
+
+    /* XL */
+    @media (min-width: 1200px)
+    {
+       .xl-none{ display: none !important; }
+       .xl-invisible{ visibility: hidden; }
+       .xl-visible{ visibility: visible; }
+    }
+
+    /* LG */
+    @media ( min-width: 992px) and (max-width: 1200px)
+    {
+       .lg-none{ display: none !important; }
+       .lg-invisible{ visibility: hidden; }
+       .lg-visible{ visibility: visible; }
+    }
+
+    /* MD */
+    @media (min-width: 768px) and (max-width: 992px)
+    {
+       .md-none{ display: none !important; }
+       .md-invisible{ visibility: hidden; }
+       .md-visible{ visibility: visible; }
+    }
+
+    /* SM */
+    @media (min-width: 576px) and (max-width: 768px)
+    {
+       .sm-none{ display: none !important; }
+       .sm-invisible{ visibility: hidden; }
+       .sm-visible{ visibility: visible; }
+    }
+
+    /* XS */
+    @media (max-width: 576px)
+    {
+       .xs-none{ display: none !important; }
+       .xs-invisible{ visibility: hidden; }
+       .xs-visible{ visibility: visible; }
+    }

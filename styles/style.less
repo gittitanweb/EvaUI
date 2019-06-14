@@ -1,0 +1,21 @@
+
+    @charset "UTF-8";
+
+    // Подключение необходимых шрифтов
+    @import 'fonts/font-awesome.css';
+    @import 'fonts/font-circe.css';
+
+    // Обозначение шрифта по умолчанию
+    @fontFamilyName : 'Circe';
+
+    // Загрузка инструментария
+    @import 'setup/autoload.less';
+
+    // Дополнительные шрифты ( Для явного назначения )
+    @import 'helpers/tool-fonts';
+
+    // Общие установки ( Общие эллементы и теги )
+    @import 'setup/ui-basic';
+
+    // Основная стилизация шаблона ( Отдельные компоненты )
+    @import 'ui-theme';

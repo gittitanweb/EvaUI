@@ -1,0 +1,71 @@
+.tw-products {
+    background: rgb(249, 249, 249) none repeat scroll 0 0;
+    min-height: 250px;
+    padding: 11px;
+    width: 100%;
+}
+
+.tw-block_search input {
+    border: 2px solid rgb(238, 238, 238);
+    font-size: 15px;
+    height: 35px;
+    padding: 5px;
+    width: 100%;
+}
+
+.tw-block_search input:focus {
+    border-color: rgb(51, 102, 153);
+}
+
+.tw-block_listing {
+    border-right: 2px solid rgb(230, 230, 230);
+    float: left;
+    max-height: 193px;
+    min-height: 193px;
+    overflow: auto;
+    width: 50%;
+}
+
+.tw-block_result {
+    float: left;
+    max-height: 193px;
+    min-height: 193px;
+    overflow: auto;
+    width: 50%;
+}
+
+.tw-block_listing:empty::before {
+    color: rgb(153, 153, 153);
+    content: "Начните вводить, что бы увидеть результаты поиска";
+    font-size: 13px;
+    position: absolute;
+    z-index: 0;
+}
+
+.tw-block_search {
+    margin-bottom: 5px;
+}
+
+.tw-block_listing p {
+    background: rgba(33, 66, 99, 0.11) none repeat scroll 0 0;
+    border-radius: 3px;
+    margin: 0 2px 0 0;
+    position: relative;
+    z-index: 2;
+}
+
+.tw-block_result p {
+    background: rgba(33, 66, 99, 0.11) none repeat scroll 0 0;
+    border-radius: 3px;
+    margin: 0 0 0 2px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Eva UI inherit */
+.pa5	{ padding: 5px !important; }
+.mb1	{ margin-bottom: 1px !important; }
+.px15	{ font-size: 15px !important; }
+.pl10	{ padding-left: 10px !important; }
+.mr5	{ margin-right: 5px !important; }
+.px13	{ font-size: 13px !important; }

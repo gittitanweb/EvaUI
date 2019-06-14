@@ -1,0 +1,63 @@
+{% macro captcha( o ) %}
+    <div class="form-group {{ o.classes|default('') }} {{ o.block_class }}" {{ o.block_attr }} >
+		<p class="px15 ff-ms-300 mb5">{{ o.label }}</p>
+        <div class="input-group input-group-{{ o.size|default('sm') }}">
+            <span class="input-group-addon">
+                <span unload="$(this).load('/callbacks/createCaptcha', function(e){ $(this).html(e) });" class="h30 w100 align-items-center justify-content-centerd-flex">
+                    [ Загрузка кода... ]
+                </span>
+            </span>
+            <input type="{{ o.type|default('text') }}" class="form-control" value="{{ o.value|e }}" placeholder="{{ o.placeholder|default('') }}" name="{{ o.name }}" {{o.input_attr}} >
+        </div>
+        <small class="form-text {{ o.desc_classes|default('text-muted') }}">{{ o.desc }}</small>
+    </div>
+{% endmacro %}
+
+{% macro hidden(name, value) %}
+    <input type="hidden" value="{{ value|e }}" placeholder="" name="{{ name }}" class="form-control">
+{% endmacro %}
+
+{% macro input( o ) %}
+    <div class="form-group {{ o.classes|default('') }} {{ o.block_class }}" {{ o.block_attr }} >
+		<p class="px15 ff-ms-300 mb5">{{ o.label }}</p>
+        <input type="{{ o.type|default('text') }}" class="form-control input-{{ o.size|default('sm') }} {{ o.input_class }}" name="{{ o.name }}" placeholder="{{ o.placeholder }}" autocomplete="true" value="{{ o.value|e }}" {{o.input_attr}} />
+        {% if o.desc %}<small class="form-text {{ o.desc_classes|default('text-muted') }}">{{ o.desc }}</small>{% endif %}
+    </div>
+{% endmacro %}
+
+{% macro textarea( o ) %}
+    <div class="form-group {{ o.classes|default('') }} {{ o.block_class }}" {{ o.block_attr }} >
+		<p class="px15 ff-ms-300 mb5">{{ o.label }}</p>
+        <textarea class="form-control textarea-{{ o.size|default('sm') }} {{ o.textarea_class }}" name="{{ o.name }}" placeholder="{{ o.placeholder }}" autocomplete="true"  {{o.textarea_attr}} >{{ o.value|e }}</textarea>
+        {% if o.desc %}<small class="form-text {{ o.desc_classes|default('text-muted') }}">{{ o.desc }}</small>{% endif %}
+    </div>
+{% endmacro %}
+
+
+{% macro form( o ) %}
+
+        {% set set_requare = '' %}
+        {% set set_before = '' %}
+        {% set set_success = '' %}
+        {% set formid = '' %}
+
+        {% if o.requare %}
+            {% set set_requare = ' requare="%REQUARE%" '|replace({'%REQUARE%': o.requare}) %}
+        {% endif %}
+        {% if o.before %}
+            {% set set_before = ' before="%BEFORE%" '|replace({'%BEFORE%': o.before}) %}
+        {% endif %}
+        {% if o.success %}
+            {% set set_success = ' success="%SUCCESS%" '|replace({'%SUCCESS%': o.success}) %}
+        {% endif %}
+        {% if o.formid %}
+            {% set formid = ' id="%FORMID%" '|replace({'%FORMID%': o.formid}) %}
+        {% endif %}
+
+        <form action="{{ o.action|default('#') }}" role="form" method="{{ o.method }}" {{ formid }} {{ set_requare }} {{ set_before }} {{ set_success }} data_type="{{ o.dataType|default('text') }}" class="{{ o.classes }}" >
+
+{% endmacro %}
+
+{% macro endform() %}
+	</form>
+{% endmacro %}

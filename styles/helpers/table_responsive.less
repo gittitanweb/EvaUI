@@ -1,0 +1,36 @@
+/**
+*    @Описание: Стилизации компонента для создания адаптивных таблиц
+*    ----------
+*    @Eva ui-framevork --- https://github.com/gittitanweb/ui.eva
+**/
+
+.d-table, .d-table{ display:table; }
+.d-table-row, .d-tr, .d-table-row, .d-th{ display:table-row; }
+.d-table-col, .d-tc{ display:table-cell; }
+
+.d-md-table-cell:before {
+    content: attr(data-title)": ";
+    font-weight: bold;
+    width: 6.5em;
+    display: inline-block;
+    padding-right: 15px;
+    text-align: right;
+}
+
+@media (min-width: unit(@a[md], px) ) {
+    .d-md-table-cell:before { display: none; }
+}
+
+.table-striped .d-tr:nth-of-type(2n+1) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table .d-tc, .table .d-md-table-cell {
+    border-top: 1px solid @set[white];
+    padding: 0.75rem;
+    vertical-align: top;
+}
+
+.table .d-th .d-md-table-cell {
+    border-bottom: 3px solid @set[primary];
+}

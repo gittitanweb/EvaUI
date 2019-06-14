@@ -1,0 +1,113 @@
+
+// Установка сцикла светлых сущностей со тёмным текстом
+@night-color : @set[dark];
+@night : {
+    warning : @set[warning];
+    white : @set[white];
+    secondary : @set[secondary];
+}
+
+// Установка цикла тёмных сущностей с светлым текстом
+@light-color : @set[white];
+@light : {
+    primary : @set[primary];
+    default : @set[default];
+    success : @set[success];
+    danger : @set[danger];
+    info : @set[info];
+}
+
+// Создание светлых сущностей с тёмным текстом
+each(@night, {
+    .btn-@{key}, .badge-@{key} {
+        background-color: @value;
+        border-color: @value;
+        color: @night-color;
+    }
+    .btn-@{key}-outline, .badge-@{key}-outline {
+        color: @value;
+        background-image: none;
+        background-color: transparent;
+        border-color: @value;
+    }
+    .btn-@{key}:hover, .btn-@{key}:active, .btn-@{key}.active, .show > .btn-@{key}.dropdown-toggle {
+        @set_color : (@value - 10%);
+        @set_color_text : (@night-color - 10%);
+        background-color: @set_color;
+        border-color: @set_color;
+        color: @set_color_text;
+        background-image: none;
+        box-shadow: 0px 0px 3px @set_color;
+    }
+    .btn-@{key}-outline:hover, .btn-@{key}-outline:active, .btn-@{key}-outline.active, .show > .btn-@{key}-outline.dropdown-toggle {
+        @set_color : (@value - 10%);
+        color: @set_color;
+        background-color: @set_color;
+        border-color: @set_color;
+    }
+
+    .btn-@{key}.disabled, .btn-@{key}:disabled {
+        background-color: (@value + 10%);
+        border-color: (@value + 10%);
+    }
+
+    .btn-@{key}-outline.disabled, .btn-@{key}-outline:disabled {
+        color: (@value + 10%);
+        background-color: transparent;
+    }
+
+});
+
+// Создание тёмных сущностей с светлым текстом
+each(@light, {
+    .btn-@{key}, .badge-@{key}, .btn-@{key}[href], .btn-@{key}[href], .badge-@{key}[href], .badge-@{key}[href] {
+        background-color: @value;
+        border-color: @value;
+        color: @light-color;
+    }
+    .btn-@{key}-outline, .badge-@{key}-outline {
+        color: @value;
+        background-image: none;
+        background-color: transparent;
+        border-color: @value;
+    }
+    .btn-@{key}:hover, .btn-@{key}:active, .btn-@{key}[href]:focus, .btn-@{key}[href]:hover, .badge-@{key}[href]:focus, .badge-@{key}[href]:hover {
+    @set_color : (@value - 10%);
+    @set_color_text : (@light-color - 10%);
+        background-color: @set_color;
+        border-color: @set_color;
+        color: @set_color_text;
+        box-shadow: 0px 0px 3px @set_color;
+    }
+    .btn-@{key}-outline:hover, .btn-@{key}-outline:active, .btn-@{key}-outline.active, .show > .btn-@{key}-outline.dropdown-toggle {
+        @set_color : (@value - 10%);
+        color: @set_color;
+        background-color: @set_color;
+        border-color: @set_color;
+    }
+    .btn-@{key}.disabled, .btn-@{key}:disabled {
+        background-color: (@value + 10%);
+        border-color: (@value + 10%);
+    }
+    .btn-@{key}-outline.disabled, .btn-@{key}-outline:disabled {
+        color: (@value + 10%);
+        background-color: transparent;
+    }
+});
+
+// Создние ЦВЕТОВЫХ КЛАССОВ текста и фона
+each(@set, {
+    .c-@{key}, .c-@{key}-hover:hover, .c-@{key}-focus:focus, .c-@{key}-active:focus,
+    .color-@{key}, .color-@{key}-hover:hover, .color-@{key}-focus:focus, .color-@{key}-active:focus,
+    .text-@{key}, .text-@{key}-hover:hover, .text-@{key}-focus:focus, .text-@{key}-active:focus,
+    .font-@{key}, .font-@{key}-hover:hover, .font-@{key}-focus:focus, .font-@{key}-active:focus,
+    {
+        color: @value !important;
+    }
+    .bg-@{key}, .bg-@{key}-hover:hover, .bg-@{key}-focus:focus, .bg-@{key}-active:focus {
+        background-color: @value !important;
+    }
+    .bc-@{key}, .bc-@{key}-hover:hover, .bc-@{key}-focus:focus, .bc-@{key}-active:focus {
+        border-color: @value !important;
+    }
+});

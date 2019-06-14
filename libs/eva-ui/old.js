@@ -1,7 +1,7 @@
 /*!
- * EvaUI
- * https://github.com/gittitanweb/ui.eva
+ * EvaUI v1.0.0
  */
+
 
 if (typeof jQuery === 'undefined') {
   throw new Error('Для работы EvaUI, необходимо прежде загрузить библиотеку JQuery');
@@ -14,67 +14,100 @@ if (typeof jQuery === 'undefined') {
   }
 }(jQuery);
 
+if (typeof Twig === 'undefined') {
+  throw new Error('Для работы EvaUI, необходимо прежде загрузить библиотеку Twig');
+}
+
 ;(function( $, window ){
 
 	var defaults = {
-
         // Отгрузка каркасов
         getTplDownload : '/helper/get_tpl_data',
-
         // Конфигурация сайта
         urlGetConfig : '/helper/getConfigurations',
-
         // Языковые настройки сайта
         urlGetLang : '/helper/getLanguageSettings',
-
-        // Избранное :: Елемент для окраски в избранном
+        // Избранное :: Еллемент для окраски
         dom_favoritesIcon : '.event-favorites-btn',
-
-        // Избранное :: Еллемент для вывода кол-ва элементов в избранном
-        dom_fvrCount : '.event-favorites-count',
-
-        // Избранное :: Елемент для вывода кол-ва элементов в избранном( Если ноль )
+        // Избранное :: Еллемент для вывода кол-ва эллементов в избранном
+        dom_fvrCount : '#countFavorites',
+        // Избранное :: Еллемент для вывода кол-ва эллементов в избранном( Если ноль )
         dom_fvrCount_empty : '0',
 
-        // Корзина :: Елемент для вывода кол-ва наименований
+        // Избранное :: Еллемент для окраски
+        dom_compairesIcon : '.event-compaires-btn',
+        // Избранное :: Еллемент для вывода кол-ва эллементов в избранном
+        dom_cprCount : '#countCompaires',
+        // Избранное :: Еллемент для вывода кол-ва эллементов в избранном( Если ноль )
+        dom_cprCount_empty : '0',
+
+        // Корзина :: Еллемент для вывода кол-ва наименований
         dom_cartCount : '.countShiping',
-
-        // Корзина :: Елемент для вывода кол-ва наименований( Если ноль )
+        // Корзина :: Еллемент для вывода кол-ва наименований( Если ноль )
         dom_cartCount_empty : '0',
-
-        // Корзина :: Елемент для вывода кол-ва товаров
+        // Корзина :: Еллемент для вывода кол-ва товаров
         dom_cartCountProducts : false,
-
-        // Корзина :: Елемент для вывода кол-ва товаров( Если ноль )
+        // Корзина :: Еллемент для вывода кол-ва товаров( Если ноль )
         dom_cartCountProducts_empty : '0',
-
-        // Корзина :: Елемент для вывода общей стоимости
+        // Корзина :: Еллемент для вывода общей стоимости
         dom_cartAllPrice : false,
-
-        // Корзина :: Елемент для вывода общей стоимости( Если ноль )
+        // Корзина :: Еллемент для вывода общей стоимости( Если ноль )
         dom_cartAllPrice_empty : '',
 
+        // Символика и обозначение валюты
+        cart_sumbol : 'руб.',
+        cart_current_sumbol : 'RUB',
+
+        // Название валюты [1,2,6]
+        cart_current : ['рубль', 'рубля', 'рублей'],
+
         // Что сделать после того как товар был добавлен в корзину
-        callback_cart_added : function( listing )
+        callback_cart_added : function( params )
         {
-            helpers.alert('success', 'Вы успешно обновили содержимое корзины!');
-            CART.header_update();
+            console.log('callback_cart_added', params);
+            helpers.alert( 'success', [
+                params.title, ' добавлен в спосок покупок в кол-ве:', params.item.qty, 'на сумму:', (params.item.summa / 100), window.EVA.cart_sumbol
+            ].join(' '));
+        },
+
+        // Что сделать после того как товар был добавлен в корзину
+        callback_cart_seted : function( params )
+        {
+            console.log('callback_cart_seted', params);
+            if( helpers.in_array( params.method.toString(), ['set', 'updateCount' ], false, false ) !== false )
+            {
+                helpers.alert('success', [
+                    'Для товара', params.item.title, 'установленно кол-во:', params.item.qty, 'на сумму:', (params.item.summa / 100), window.EVA.cart_sumbol
+                ].join(' '));
+            }
+
+            if( helpers.in_array( params.method.toString(), ['add'], false, false ) !== false )
+            {
+                helpers.alert('success', [
+                    params.item.title, 'добавлен. Установленно кол-во:', params.item.qty, 'на сумму:', (params.item.summa / 100), window.EVA.cart_sumbol
+                ].join(' ') );
+            }
+
         },
 
         // Что сделать после того как товар был удалён из корзины
-        callback_cart_removed : function( listing ){
-            helpers.alert('success', 'Вы успешно обновили содержимое корзины!');
-            CART.header_update();
+        callback_cart_removed : function( params )
+        {
+            console.log('callback_cart_removed', params);
+            helpers.alert('success', [
+                params.item.title, 'удалён из списка покупок'
+            ].join(' '));
+        },
+
+        // Что сделать после того как товар был удалён из корзины
+        callback_cart_all_removed : function( params )
+        {
+            console.log('callback_cart_all_removed', params);
+            helpers.alert('success', 'Список покупок - полностью очищен');
         },
 
         // Нужный функционал
-        plugins : [
-            'events',
-            'configurations',
-            'tpl',
-            'cart',
-            'favorites'
-        ],
+        plugins : ['events', 'configurations', 'tpl', 'cart', 'favorites', 'compaires'],
 
         render_css : true,
         render_css_setting : {
@@ -119,29 +152,25 @@ if (typeof jQuery === 'undefined') {
                 { name : 'pl',    action : 'padding-left: ',    min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
                 { name : 'pr',    action : 'padding-right: ',   min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
 
-                { name : 'lh',    action : 'line-height: ',     min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
-
-                { name : 't',    action : 'top: ',     min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
-                { name : 'b',    action : 'bottom: ',  min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
-                { name : 'l',    action : 'left: ',    min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
-                { name : 'r',    action : 'right: ',   min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 }
+                { name : 'lh',    action : 'line-height: ',     min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 }
             ]
 
         }
 
 	};
 
-	$.fn.EvaUI = function( options )
-    {
+	$.fn.EvaUI = function( options ){
 
-        if( this.length > 1 )
-        {
+        if( this.length > 1 ){
             throw new Error('EvaUI, необходимо вызвать лишь единожды, не чаще!');
             return false;
         }
 
 		var THIS = this;
         var Eva = {};
+
+        // Доступ через глобальный уровень
+        window.EVA = {};
 
         // Суперглобальный объект
         window.GLOBAL = {
@@ -163,7 +192,7 @@ if (typeof jQuery === 'undefined') {
 
         };
 
-        // Родительский элемент для AJAX манипуляций
+        // Родительский эллемент для AJAX манипуляций
         window.DOM = {
             parent : ' body '
         };
@@ -180,90 +209,86 @@ if (typeof jQuery === 'undefined') {
             cart : false,
             events : false,
             favorites : false,
+            compaires : false,
             tpl : false,
             configurations : false
         };
 
 		// Иннициализация Евы
 		var init = function(){
-
-            // Обьединение настроек
-			Eva.sett = $.extend( defaults, options );
-
-            // Загрузка и установка модулей
+			Eva.sett = window.EVA = $.extend( defaults, options );
             setup();
 
-            // Рендеринг вспомагательных классов
-            if( Eva.sett.render_css !== false )
-            {
+            if( Eva.sett.render_css !== false ){
                 render_css();
             }
 
 		};
 
-        // Установка
-        var setup = function()
-        {
+        // Установка событий
+        var setup = function(){
 
             mod_helpers();
             READY.helpers = true;
 
-            if( Eva.sett.plugins.indexOf( 'events' ) != -1 ){
+            if( Eva.sett.plugins.indexOf( 'events' ) != -1 )
+            {
                 mod_events();
                 READY.events = true;
             }
 
-            if( Eva.sett.plugins.indexOf( 'configurations' ) != -1 ){
+            if( Eva.sett.plugins.indexOf( 'configurations' ) != -1 )
+            {
                 mod_configurations();
                 READY.configurations = true;
             }
 
-            if( Eva.sett.plugins.indexOf( 'tpl' ) != -1 && typeof Twig !== 'undefined' )
+            if( Eva.sett.plugins.indexOf( 'tpl' ) != -1 )
             {
                 mod_tpl();
                 READY.tpl = true;
             }
 
-            if( Eva.sett.plugins.indexOf( 'cart' ) != -1 ){
+            if( Eva.sett.plugins.indexOf( 'cart' ) != -1 )
+            {
                 mod_cart();
                 READY.cart = true;
             }
 
-            if( Eva.sett.plugins.indexOf( 'favorites' ) != -1 ){
+            if( Eva.sett.plugins.indexOf( 'favorites' ) != -1 )
+            {
                 mod_favorites();
                 READY.favorites = true;
+            }
+
+            if( Eva.sett.plugins.indexOf( 'compaires' ) != -1 )
+            {
+                mod_compaires();
+                READY.compaires = true;
             }
 
         };
 
         // Загрузка модуля инструментариев
-        var mod_helpers = function()
-        {
+        var mod_helpers = function(){
             window.helpers = {}; // Инструментарий ( Набор полезных функций )
             window.helpers = {
 
                 // извлеч только цифры из строки
-                getNumeric : function( string )
-                {
+                getNumeric : function( string ){
                     return parseInt(string.replace(/\D+/g,""));
                 },
 
                 // Найти значение в массиве
-                in_array : function (value, array, index, response)
-                {
+                in_array : function (value, array, index, response){
                     var response = response || false;
                     var index = index || false;
-                    for(var i = 0; i < array.length; i++)
-                    {
+                    for(var i = 0; i < array.length; i++){
                         var variabled = (!index)?array[i]:array[i][index];
-                        if(variabled == value)
-                        {
-                            if(response)
-                            {
+                        if(variabled == value){
+                            if(response){
                                 return array[i];
-                            }
-                            else
-                            {
+                            }else{
                                 return true;
                             }
                         }
@@ -272,21 +297,15 @@ if (typeof jQuery === 'undefined') {
                 },
 
                 // Найти значение в массиве
-                helper_id_ids : function ( array, index, unic )
-                {
+                helper_id_ids : function ( array, index, unic ){
                     var response = [];
-                    for(var i = 0; i < array.length; i++)
-                    {
+                    for(var i = 0; i < array.length; i++){
                         var variabled = array[i][index];
-                        if( unic )
-                        {
-                            if( !helpers.in_array( variabled, response, false, false ) )
-                            {
+                        if( unic ){
+                            if( !helpers.in_array( variabled, response, false, false ) ){
                                 response.push( variabled );
                             }
-                        }
-                        else
-                        {
+                        }else{
                             response.push( variabled );
                         }
                     }
@@ -446,11 +465,11 @@ if (typeof jQuery === 'undefined') {
                             closeButton : true,
                             debug : false,
                             progressBar : true,
-                            positionClass : "toast-bottom-full-width",
+                            positionClass : "toast-top-right",
                             onclick : true,
                             showDuration : "400",
                             hideDuration : "1000",
-                            timeOut : "7000",
+                            timeOut : "3000",
                             extendedTimeOut : "1000",
                             showEasing : "swing",
                             hideEasing : "linear",
@@ -751,12 +770,9 @@ if (typeof jQuery === 'undefined') {
         };
 
         // Загрузка и запуск событий
-        var mod_events = function()
-        {
+        var mod_events = function(){
             window.events = {}; // Для глобальных событий
-            const module = await import('modules/events.js');
-
-            /*window.events = {
+            window.events = {
 
                 link: function () {
 
@@ -770,7 +786,6 @@ if (typeof jQuery === 'undefined') {
 						catch(er){
 							console.log( er );
 						}
-
                     });
                     $(document).on('click', 'a[href^="#"]', function (e) {
                         e.preventDefault();
@@ -878,7 +893,7 @@ if (typeof jQuery === 'undefined') {
 
                 }
 
-            };*/
+            };
 
             window.events.link();
             window.events.unload();
@@ -887,22 +902,25 @@ if (typeof jQuery === 'undefined') {
         };
 
         // Загрузка конфигураций и языковых настроек
-        var mod_configurations = function()
-        {
+        var mod_configurations = function(){
 
             window.configurations = {
 
-                getConfig : function(){
-                    if( !sessionStorage.getItem('config') ){
+                getConfig : function()
+                {
+                    if( !sessionStorage.getItem('config') )
+                    {
                         return false;
-                    }else if( sessionStorage.getItem('config') ){
+                    }else if( sessionStorage.getItem('config') )
+                    {
                         var _config = sessionStorage.getItem('config');
                         window.GLOBAL.CONFIG = $.parseJSON( _config );
                         return true;
                     }
                 },
 
-                uploadConfig : function(){
+                uploadConfig : function()
+                {
                     $.get( Eva.sett.urlGetConfig , function( config ) {
                         window.GLOBAL.CONFIG = config;
                             window.GLOBAL.config_libs_path = config.config_libs_path;
@@ -916,18 +934,24 @@ if (typeof jQuery === 'undefined') {
                     }, "json");
                 },
 
-                getLang : function(){
-                    if( !sessionStorage.getItem('lang') ){
+                getLang : function()
+                {
+                    if( !sessionStorage.getItem('lang') )
+                    {
                         return false;
-                    }else if( sessionStorage.getItem('lang') ){
+                    }
+                    else if( sessionStorage.getItem('lang') )
+                    {
                         var _config = sessionStorage.getItem('lang');
                         window.GLOBAL.LANG = $.parseJSON( _config );
                         return true;
                     }
                 },
 
-                uploadLang : function(){
-                    $.get( Eva.sett.urlGetLang , function( response ) {
+                uploadLang : function()
+                {
+                    $.get( Eva.sett.urlGetLang , function( response )
+                    {
                         window.GLOBAL.LANG = response;
                         sessionStorage.setItem('lang', window.helpers._convert_value(response));
                         return true;
@@ -936,19 +960,20 @@ if (typeof jQuery === 'undefined') {
 
             };
 
-            if( window.configurations.getLang() !== true ){
+            if( window.configurations.getLang() !== true )
+            {
                 window.configurations.uploadLang();
             }
 
-            if( window.configurations.getConfig() !== true ){
+            if( window.configurations.getConfig() !== true )
+            {
                 window.configurations.uploadConfig();
             }
 
         };
 
         // Модуль для работы с шаблонами
-        var mod_tpl = function()
-        {
+        var mod_tpl = function(){
             window.TPL = false; // Помощьник для работы с шаблонизатором
             window.MEM['TPL'] = { tpl_list : [] };
 
@@ -1027,19 +1052,27 @@ if (typeof jQuery === 'undefined') {
         var mod_cart = function()
         {
             window.CART = false; // Работа с корзиной заказов
-            window.CART = {
+            window.CART =
+            {
+
+                LIST : [],
 
                 // Сервисная информация
-                service_data : function(){
-                    var items = {
+                service_data : function()
+                {
+                    var items =
+                    {
                         tovarov: 0,
                         prices_cop: 0,
                         prices_rub: 0,
                         counts: 0
                     };
+
                     var list = this.list(false);
-                    if (list.length > 0) {
-                        for (var key in list) {
+                    if ( list.length > 0 )
+                    {
+                        for ( var key in list )
+                        {
                             var val = list[key];
                             items.counts = Number( items.counts ) + Number( val.qty );
                             items.prices_cop = Number( items.prices_cop ) + Number( val.price ) * Number( val.qty );
@@ -1047,37 +1080,69 @@ if (typeof jQuery === 'undefined') {
                             items.tovarov++;
                         }
                     }
+
                     return items;
+
+                },
+
+                // Создание контейнера
+                create : function()
+                {
+
+                    if( $.cookie('shooping') === undefined )
+                    {
+                        $.cookie( 'shooping', '[]', {
+                            expires: 7,
+                            path: '/'
+                        });
+                    }
+
+                    this.LIST = $.cookie('shooping');
+
                 },
 
                 // Обновляет табло информации
-                header_update: function () {
+                header_update: function ()
+                {
 
+                    // Получение сервисной информации
                     var items = this.service_data();
 
                     // Кол-во наименований
-                    if (  Eva.sett.dom_cartCount !== false ) {
-                        if( items.tovarov > 0 ){
+                    if (  Eva.sett.dom_cartCount !== false )
+                    {
+                        if( items.tovarov > 0 )
+                        {
                             $( Eva.sett.dom_cartCount ).text( items.tovarov );
-                        }else{
+                        }
+                        else
+                        {
                             $( Eva.sett.dom_cartCount ).text( Eva.sett.dom_cartCount_empty );
                         }
                     }
 
                     // Кол-во товаров
-                    if (  Eva.sett.dom_cartCountProducts !== false ) {
-                        if( items.counts > 0 ){
+                    if (  Eva.sett.dom_cartCountProducts !== false )
+                    {
+                        if( items.counts > 0 )
+                        {
                             $( Eva.sett.dom_cartCountProducts ).text( items.counts );
-                        }else{
+                        }
+                        else
+                        {
                             $( Eva.sett.dom_cartCountProducts ).text( Eva.sett.dom_cartCountProducts_empty );
                         }
                     }
 
                     // Общая сумма
-                    if (  Eva.sett.dom_cartAllPrice !== false ) {
-                        if( items.prices_cop > 0 ){
+                    if (  Eva.sett.dom_cartAllPrice !== false )
+                    {
+                        if( items.prices_cop > 0 )
+                        {
                             $( Eva.sett.dom_cartAllPrice ).text( helpers.price_format( items.prices_rub, ',', '.', 2 ) );
-                        }else{
+                        }
+                        else
+                        {
                             $( Eva.sett.dom_cartAllPrice ).text( Eva.sett.dom_cartAllPrice_empty );
                         }
                     }
@@ -1085,194 +1150,439 @@ if (typeof jQuery === 'undefined') {
                 },
 
                 // Список товаров в хранилище
-                list: function ( callFnc ) {
+                /*
+                    CART.list(function( e ){
+                        console.log( e );
+                    });
+                */
+                list : function( callFnc )
+                {
                     var callFnc = callFnc || false;
+
+                    // Если нет куки- создать её )
+                    this.create();
+
+                    // Получить список избранных товаров
                     var response = [];
-                    if (localStorage.getItem('cart') === 'undefined')    localStorage.setItem('cart', '[]');
-                    if (!localStorage.getItem('cart'))    localStorage.setItem('cart', '[]');
-                    var _cart = localStorage.getItem('cart');
-                    var cart = $.parseJSON(_cart);
-                    if (cart.length > 0) {
-                        for (var key in cart) {
-                            var val = cart[key];
-                            var x = ( window.helpers._type_of(val) === 'object') ? val : $.parseJSON(val);
+                    var ARRAY_LIST = $.parseJSON( this.LIST );
+                    if( ARRAY_LIST.length > 0 )
+                    {
+                        for (var key in ARRAY_LIST)
+                        {
+                            var val = ARRAY_LIST[key];
+                            var x = ( window.helpers._type_of(val) === 'object')?val:$.parseJSON(val);
                             response.push(x);
                         }
                     }
-                    if (callFnc) {
+
+                    // Возврат списка
+                    if ( callFnc )
+                    {
                         callFnc(response);
-                    } else {
+                    }
+                    else
+                    {
                         return response;
                     }
+
                 },
 
-                // Добавление товара в хранилище
+                // Перезапись новых установок в массив
+                setValues : function( values )
+                {
+
+                    // Перезапись массива данных
+                    $.cookie( 'shooping', window.helpers._convert_value( values ), {
+                        expires: 7,
+                        path: '/'
+                    });
+
+                    // Обновить табло
+                    this.header_update();
+
+                },
+
+                // Обработка параметров
                 /**
                     Параметры:
                     ---
                     id : ИД товара
                     title : Название товара
                     price : Цена !! В КОПЕЙКАХ !!
-                    qty : { // Если false - Один товар
-                        type : 'fixed', // 'fixed' - Фиксированное значение / 'plus' - Добавить кол-во к текущему
-                        input : false,  // Значение из Поля с указанным атрибутом либо false
-                        value : false  // 0 - Удалить товар.
-                    },
+                    qty : Кол-во ( По умолчанию - 1)
+                    elm : Елемент у которого нужно изьять кол-во ( '#PROD_101' )
                     orig : {} // Дополнительные данные
                     --
                 */
-                add: function ( AddItem ) {
+                getParams : function( params, callback )
+                {
 
-                    var AddItem = AddItem || false;
+                    var this_ = this;
+                    var params = params || false;
+                    var callback = callback || false;
+                    var data = {};
 
-                    if (AddItem != false) {
+                    if ( params != false )
+                    {
 
-                        var list = this.list(false);
-
-                        var ID = (AddItem['id']) ? AddItem.id : false;
-                        var TITLE = (AddItem['title']) ? AddItem.title : false;
-                        var PRICE = (AddItem['price']) ? AddItem.price : 0;
-                        var QTY = (AddItem['qty']) ? AddItem.qty : 1;
-                        var ORIG = (AddItem['orig']) ? AddItem.orig : false;
-
-                        var math = 0;
-                        if (list.length > 0) {
-                            for (var key in list) {
-                                var val = list[key];
-                                if (val.id.toString() === ID.toString()) {
-
-                                    var issetQTY = false;
-                                    if( QTY.value < 0 ){ QTY.value = 0; }
-
-                                    if( QTY.type === 'fixed' ){
-                                        if( QTY.value ){
-                                            list[key].qty = QTY.value;
-                                        }else{
-                                            list[key].qty = ( $( QTY.input ) ) ? Number( $( QTY.input ).val()) : 1;
-                                        }
-                                        issetQTY = true;
-                                    }
-
-                                    if( QTY.type === 'plus' ){
-                                        if( QTY.value ){
-                                            list[key].qty = Number( val.qty ) + Number( QTY.value );
-                                        }else{
-                                            list[key].qty = ( $( QTY.input ) ) ? val.qty + Number( $( QTY.input ).val()) : val.qty + ( QTY.value ) ? QTY.value : 1;
-                                        }
-                                        issetQTY = true;
-                                    }
-
-                                    if (issetQTY === false) {
-                                        list[key].qty = 1;
-                                    }
-
-                                    math = 1;
-
-                                }
-                            }
+                        var ID = ( params['id'] ) ? params.id : false;
+                        var TITLE = ( params['title'] ) ? params.title : false;
+                        var PRICE = ( params['price'] ) ? params.price : 0;
+                        var ORIG = ( params['orig'] ) ? params.orig : false;
+                        var ELM = ( params['elm'] ) ? params.elm : false;
+                        var QTY = ( params['qty'] ) ? params.qty : 1;
+                        if( ELM !== false && $(ELM) )
+                        {
+                            var QTY = Number( $(ELM).val() );
                         }
-
-                        if (math < 1) {
-
-                            var addQty = 1;
-
-                            if (QTY.value != false) {
-                                addQty = QTY.value;
-                            }
-
-                            if (QTY.input) {
-                                addQty = ($(QTY.input)) ? $(QTY.input).val() : addQty;
-                            }
-
-                            list.push({
-                                id: ID,
-                                title: TITLE,
-                                qty: Number(addQty),
-                                price: PRICE,
-                                orig: ORIG
-                            });
-                        }
-
-                        localStorage.setItem('cart', window.helpers._convert_value(list));
-                        this.header_update();
-
-                        Eva.sett.callback_cart_added( list );
 
                     }
+                    else
+                    {
+                        console.log('CART::add', 'Не хватает параметов для добавления в корзину' );
+                    }
+
+                    if( ID !== false && TITLE !== false )
+                    {
+                        data['ID'] = ID;
+                        data['TITLE'] = TITLE;
+                        data['PRICE'] = PRICE;
+                        data['ORIG'] = ORIG;
+                        data['QTY'] = QTY;
+                    }
+                    else
+                    {
+                        console.log('CART::add', 'ОБЯЗАТЕЛЬНЫЕ параметры - отсутствуют' );
+                    }
+
+                    if( callback !== false )
+                    {
+                        callback( data );
+                    }
+                    else
+                    {
+                        return data;
+                    }
+
+                },
+
+                // Добавить к количеству
+                // CART.add({id : 12,title : 'Product A',price : 10000, qty: 1});
+                add : function( params, callback )
+                {
+
+                    var this_ = this;
+                    var callback = callback || false;
+                    var list = this.list(false);
+
+                    this.getParams( params || false, function( c ){
+                        if( c !== false )
+                        {
+
+                            if ( list.length > 0 && helpers.in_array( c.ID.toString(), list, 'id', false ) )
+                            {
+
+                                // Если там такое значение существует
+                                for ( var key in list )
+                                {
+                                    var val = list[key];
+                                    if ( val.id.toString() === c.ID.toString() && c.QTY > 0 )
+                                    {
+                                        list[key].qty = Number( val.qty ) + Number( c.QTY );
+                                        list[key].summa = Number( list[key].qty ) * Number( list[key].price );
+                                    }
+                                }
+
+                                // Вызов пользовательских функций
+                                Eva.sett.callback_cart_seted({
+                                    item : helpers.in_array( c.ID.toString(), list, 'id', true ),
+                                    method : 'add'
+                                });
+
+                            }
+                            else
+                            {
+
+                                // Добавление
+                                list.push({
+                                    id: c.ID,
+                                    title: c.TITLE,
+                                    qty: c.QTY,
+                                    price: c.PRICE,
+                                    summa: Number(c.QTY) * Number(c.PRICE),
+                                    orig: c.ORIG
+                                });
+
+                                // Вызов пользовательских функций
+                                Eva.sett.callback_cart_added({
+                                    item : helpers.in_array( c.ID.toString(), list, 'id', true ),
+                                    method : 'add'
+                                });
+
+                            }
+
+                            this_.setValues( list );
+
+                        }
+                    });
+
+                    if( callback !== false )
+                    {
+                        callback( list, 'add' );
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
+                },
+
+                // Установить кол-во
+                // CART.set({id : 12,title : 'Product A',price : 10000, qty: 2});
+                set : function( params, callback )
+                {
+
+                    var this_ = this;
+                    var callback = callback || false;
+                    var list = this.list(false);
+
+                    this.getParams( params || false, function( c ){
+                        if( c !== false )
+                        {
+                            if ( list.length > 0 && helpers.in_array( c.ID.toString(), list, 'id', false ) )
+                            {
+
+                                // Если там такое значение существует
+                                for ( var key in list )
+                                {
+                                    var val = list[key];
+                                    if ( val.id.toString() === c.ID.toString() && c.QTY > 0 )
+                                    {
+                                        list[key].qty = Number( c.QTY );
+                                        list[key].summa = Number( c.QTY ) * Number( list[key].price );
+                                    }
+                                }
+
+                                // Вызов пользовательских функций
+                                Eva.sett.callback_cart_seted({
+                                    item : helpers.in_array( c.ID.toString(), list, 'id', true ),
+                                    method : 'set'
+                                });
+
+                            }
+                            else
+                            {
+
+                                // Добавление
+                                list.push({
+                                    id: c.ID,
+                                    title: c.TITLE,
+                                    qty: c.QTY,
+                                    price: c.PRICE,
+                                    summa: Number(c.QTY) * Number(c.PRICE),
+                                    orig: c.ORIG
+                                });
+
+                                // Вызов пользовательских функций
+                                Eva.sett.callback_cart_added({
+                                    item : helpers.in_array( c.ID.toString(), list, 'id', true ),
+                                    method : 'set'
+                                });
+
+                            }
+                            this_.setValues( list );
+                        }
+                    });
+
+                    if( callback !== false )
+                    {
+                        callback( list, 'set' );
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
+                },
+
+                // Переключатель состояния [Добавить или Удалить]
+                // CART.toggle({id : 1,title : 'Product A',price : 10000});
+                toggle : function( params, callback )
+                {
+
+                    var this_ = this;
+                    var callback = callback || false;
+                    var list = this.list(false);
+
+                    this.getParams( params || false, function( c ){
+                        if( c !== false )
+                        {
+                            if ( list.length > 0 && helpers.in_array( c.ID.toString(), list, 'id', false ) )
+                            {
+                                // Если там такое значение существует - УДАЛИТЬ
+                                this_.remove( c.ID, function( l ){
+                                    this_.setValues( l );
+                                });
+                            }
+                            else
+                            {
+
+                                // Добавление
+                                list.push({
+                                    id: c.ID,
+                                    title: c.TITLE,
+                                    qty: c.QTY,
+                                    price: c.PRICE,
+                                    summa: Number(c.QTY) * Number(c.PRICE),
+                                    orig: c.ORIG
+                                });
+
+                                // Вызов пользовательских функций
+                                Eva.sett.callback_cart_added({
+                                    item : helpers.in_array( c.ID.toString(), list, 'id', true ),
+                                    method : 'toggle'
+                                });
+
+                                this_.setValues( list );
+                            }
+
+                        }
+                    });
+
+                    if( callback !== false )
+                    {
+                        callback( list, 'toggle' );
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
                 },
 
                 // Удаление товара из хранилища
-                remove: function ( ID, callFnc ) {
-                    var callFnc = callFnc || false;
-                    var list = this.list(false);
-                    var newList = [];
+                // CART.remove( 12 );
+                remove: function ( ID, callFnc )
+                {
 
-                    if (list.length > 0) {
-                        for (var key in list) {
+                    var this_ = this;
+                    var newList = [];
+                    var callFnc = callFnc || false;
+
+                    var list = this.list ( false );
+                    if ( list.length > 0 )
+                    {
+
+                        var removeItem = helpers.in_array( ID.toString(), list, 'id', true );
+
+                        for (var key in list)
+                        {
                             var val = list[key];
-                            if (val.id.toString() !== ID.toString()) {
+                            if ( val.id.toString() !== ID.toString() )
+                            {
                                 newList.push(val);
                             }
                         }
-                        localStorage.setItem('cart', window.helpers._convert_value(newList));
-                        this.header_update();
-                        Eva.sett.callback_cart_removed( newList );
+
+                        this_.setValues( newList );
+
+                        Eva.sett.callback_cart_removed({
+                            item : removeItem,
+                            method : 'remove'
+                        });
+
                     }
 
-                    if (callFnc) {
+                    if ( callFnc )
+                    {
                         callFnc( newList );
-                    } else {
+                    }
+                    else
+                    {
                         return newList;
                     }
-                },
 
-                // Обновление кол-ва едениц
-                updateCount: function ( ID, count, callFnc ) {
-
-                    var callFnc = callFnc || false;
-
-                    if (count < 1) {
-                        CART.remove( ID, function (list) {
-                            localStorage.setItem('cart', window.helpers._convert_value(list));
-                            if (callFnc !== false) {
-                                callFnc(list);
-                            }
-                        });
-                    } else {
-
-                        var list = [];
-                        var list = this.list(false);
-                        if (list.length > 0) {
-                            for (var key in list) {
-                                var val = list[key];
-                                if (val.id.toString() === ID.toString()) {
-                                    list[key].qty = count;
-                                }
-                            }
-                        }
-
-                        localStorage.setItem('cart', window.helpers._convert_value(list));
-                        if (callFnc !== false)  callFnc(list);
-
-                    }
-                    this.header_update();
                 },
 
                 // Очистить всю корзину
-                removeAll: function ( callFnc ) {
+                // CART.removeAll();
+                removeAll: function ( callFnc )
+                {
+
+                    var list = this.list ( false );
                     var callFnc = callFnc || false;
-                    var list = [];
-                    localStorage.setItem('cart', window.helpers._convert_value(list));
-                    this.header_update();
-                    helpers.alert('success', 'Корзина пустая');
-                    if (callFnc) {
-                        callFnc( []);
-                    } else {
+
+                    this.setValues([]);
+                    Eva.sett.callback_cart_all_removed({
+                        items : list,
+                        method : 'removeAll'
+                    });
+
+                    if (callFnc)
+                    {
+                        callFnc([]);
+                    }
+                    else
+                    {
                         return [];
                     }
+
+                },
+
+                // Обновление кол-ва едениц
+                // CART.updateCount( 12, 120 );
+                updateCount: function ( ID, count, callFnc )
+                {
+
+                    var this_ = this;
+                    var callFnc = callFnc || false;
+
+                    if ( count < 1 )
+                    {
+                        count = 1;
+                    }
+
+                    var list = this.list(false);
+                    if ( list.length > 0 && helpers.in_array( ID.toString(), list, 'id', false ) )
+                    {
+
+                        // Если там такое значение существует
+                        for ( var key in list )
+                        {
+                            var val = list[key];
+                            if ( val.id.toString() === ID.toString() )
+                            {
+                                list[key].qty = Number( count );
+                                list[key].summa = Number( count ) * Number( list[key].price );
+                            }
+                        }
+
+                        this_.setValues( list );
+
+                        // Вызов пользовательских функций
+                        Eva.sett.callback_cart_seted({
+                            item : helpers.in_array( ID.toString(), list, 'id', true ),
+                            method : 'updateCount'
+                        });
+
+                        if (callFnc)
+                        {
+                            callFnc( list );
+                        }
+                        else
+                        {
+                            return list;
+                        }
+
+                    }
+
+                    return true;
+
                 }
 
             };
+
+            CART.header_update();
 
         };
 
@@ -1281,127 +1591,204 @@ if (typeof jQuery === 'undefined') {
         {
 
             window.FAVORITES = false;
-
             window.FAVORITES = {
 
                 // Список избранных эллементов
                 LIST : [],
 
                 // Окрасить индикатор-иконку
-                updateFavoritesActive: function(){
-                    var LIST = this.list();
+                updateFavoritesActive: function()
+                {
+
                     var e = setInterval(function(){
-                        if( $( Eva.sett.dom_favoritesIcon ).length ){
+                        if( $( Eva.sett.dom_favoritesIcon ).length )
+                        {
+
                             clearInterval(e);
-                            if( LIST.length > 0 ){
+                            var LIST = FAVORITES.list();
+
+                            if( LIST.length > 0 )
+                            {
                                 $( Eva.sett.dom_favoritesIcon ).addClass('active');
-                            }else{
+                            }
+                            else
+                            {
                                 $( Eva.sett.dom_favoritesIcon ).removeClass('active');
                             }
+
                         }
                     }, 20);
+
                 },
 
                 // Пометить индикаторы на странице
-                updateCheckFavorites : function(){
-                    var LIST = this.list();
-                     var e = setInterval(function(){
-                         if( $( Eva.sett.dom_fvrCount ).length && $( '.favorites-checked' ).length ){
+                updateCheckFavorites : function()
+                {
+                    var e = setInterval(function(){
+                        if( $( Eva.sett.dom_favoritesIcon ).length && $( '.event-favorites-check' ).length )
+                        {
+
                             clearInterval(e);
+
+                            var LIST = FAVORITES.list();
                             $( DOM.parent + ' *[data-favorites-id]').map(function( i, e ){
                                 $(e).removeClass('favorites-checked');
                                 var check = helpers.in_array( Number($(e).attr('data-favorites-id')), LIST, 'essence_id', false);
-                                if( check ){
+                                if( check )
+                                {
                                     $(e).addClass('favorites-checked');
                                 }
                             });
-                            if (  Eva.sett.dom_fvrCount !== false ) {
-                                if( LIST.length > 0 ){
+
+                            if (  Eva.sett.dom_fvrCount !== false )
+                            {
+                                if( LIST.length > 0 )
+                                {
                                     $( Eva.sett.dom_fvrCount ).text( LIST.length );
-                                }else{
+                                }
+                                else
+                                {
                                     $( Eva.sett.dom_fvrCount ).text( Eva.sett.dom_fvrCount_empty );
                                 }
                             }
+
                         }
                     }, 20);
+
                 },
 
                 // Добавить / Убрать из избранного
-                checkChange : function( id, type ){
+                checkChange : function( id, type )
+                {
+
                     var checked = $( DOM.parent + ' .event-favorites-check[data-favorites-id="'+id+'"]').hasClass('favorites-checked');
-                    if( checked !== false ){
+                    if( checked !== false )
+                    {
                         // Есть в избраном = убрать его оттуда
                         $( DOM.parent + ' .event-favorites-check[data-favorites-id="'+id+'"]').removeClass('favorites-checked');
                         FAVORITES.remove( id, function(){
-                            if( Ev.favorites ){
-                                Ev.favorites.update_list();
-                            }
+                            FAVORITES.updateCheckFavorites();
                         });
-                    }else{
+                    }
+                    else
+                    {
                         // Нет в избраном = добавить его туда
                         $( DOM.parent + ' .event-favorites-check[data-favorites-id="'+id+'"]').addClass('favorites-checked');
-                        FAVORITES.add( type, id, function(){
+                        FAVORITES.add( type, id, function()
+                        {
                             FAVORITES.updateCheckFavorites();
                         });
                     }
 
                     FAVORITES.updateFavoritesActive();
-                    FAVORITES.updateCheckFavorites();
 
                 },
 
                 // Создание контейнера
-                create : function(){
-                    if( ! localStorage.getItem('favorites') )  localStorage.setItem('favorites', '[]');
-                    this.LIST = localStorage.getItem('favorites');
+                create : function()
+                {
+
+                    if( $.cookie('favorites') === undefined )
+                    {
+                        $.cookie( 'favorites', '[]', {
+                            expires: 7,
+                            path: '/'
+                        });
+                    }
+
+                    this.LIST = $.cookie('favorites');
+
                 },
 
                 // Полчить список обьектов
-                list : function(){
+                list : function()
+                {
+
+                    // Если нет куки- создать её )
                     this.create();
+
+                    // Получить список избранных товаров
                     var response = [];
                     var ARRAY_LIST = $.parseJSON( this.LIST );
-                    if( ARRAY_LIST.length > 0 ){
-                        for (var key in ARRAY_LIST) {
+                    if( ARRAY_LIST.length > 0 )
+                    {
+                        for (var key in ARRAY_LIST)
+                        {
                             var val = ARRAY_LIST[key];
                             var x = ( window.helpers._type_of(val) === 'object')?val:$.parseJSON(val);
                             response.push(x);
                         }
                     }
+
+                    // Возврат списка
                     return response;
+
                 },
 
                 // Добавить обьект в избранное
-                add : function ( type, essence_id, callback ){
+                add : function ( type, essence_id, callback )
+                {
                     var callback = callback || false;
+
+                    // Если нет куки- создать её )
                     this.create();
+
+                    // Пересобрать список избранных ( Если там нет добавляемого объекта )
                     var ARRAY_LIST = this.list();
-                    if( !window.helpers.in_array( essence_id.toString(), ARRAY_LIST, 'essence_id', false ) ){
-                        ARRAY_LIST.push(window.helpers._convert_value({
+                    if( !window.helpers.in_array( essence_id.toString(), ARRAY_LIST, 'essence_id', false ) )
+                    {
+                        var t_ = window.helpers._convert_value({
                             type : type,
                             essence_id : essence_id
-                        }));
+                        });
+                        ARRAY_LIST.push( t_ );
                     }
-                    localStorage.setItem('favorites', window.helpers._convert_value( ARRAY_LIST ));
+
+                    // Перезапись массива данных
+                    $.cookie( 'favorites', window.helpers._convert_value( ARRAY_LIST ), {
+                        expires: 7,
+                        path: '/'
+                    });
+
+                    // Обновить табло
                     FAVORITES.updateCheckFavorites();
-                    if( callback !== false ){
+
+                    // возврат индикации
+                    if( callback !== false )
+                    {
                         callback( essence_id );
-                    }else{
+                    }
+                    else
+                    {
                         return true;
                     }
+
                 },
 
                 // Удалить обьект из избранного
-                remove : function ( essence_id, callback ){
+                remove : function ( essence_id, callback )
+                {
                     var callback = callback || false;
-                    window.helpers.remove_array( essence_id, this.list(), 'essence_id', function( new_array_avorites ){
-                        localStorage.setItem('favorites', window.helpers._convert_value( new_array_avorites ));
+
+                    // Удалить и пересобрать массив
+                    window.helpers.remove_array( essence_id, this.list(), 'essence_id', function( new_array_avorites )
+                    {
+                        $.cookie( 'favorites', window.helpers._convert_value( new_array_avorites ), {
+                            expires: 7,
+                            path: '/'
+                        });
                     });
-                    if( callback !== false ){
+
+                    // Возврат индикации
+                    if( callback !== false )
+                    {
                         callback( essence_id );
-                    }else{
+                    }
+                    else
+                    {
                         return true;
                     }
+
                 }
 
             };
@@ -1411,9 +1798,210 @@ if (typeof jQuery === 'undefined') {
 
         };
 
-        // Создать CSS и загрузить его
-        var render_css = function()
+        // Модуль для работы со списком сравнения
+        var mod_compaires = function()
         {
+
+            window.COMPAIRES = false;
+            window.COMPAIRES = {
+
+                // Список избранных эллементов
+                LIST : [],
+
+                // Окрасить индикатор-иконку
+                updateCompairesActive: function()
+                {
+
+                    var e = setInterval(function(){
+                        if( $( Eva.sett.dom_compairesIcon ).length )
+                        {
+
+                            clearInterval(e);
+                            var LIST = COMPAIRES.list();
+                            if( LIST.length > 0 )
+                            {
+                                $( Eva.sett.dom_compairesIcon ).addClass('active');
+                            }
+                            else
+                            {
+                                $( Eva.sett.dom_compairesIcon ).removeClass('active');
+                            }
+
+                        }
+                    }, 20);
+
+                },
+
+                // Пометить индикаторы на странице
+                updateCheckCompaires : function()
+                {
+
+                    var e = setInterval(function(){
+                        if( $( Eva.sett.dom_compairesIcon ).length && $( '.event-compaires-check' ).length )
+                        {
+                            clearInterval(e);
+                            var LIST = COMPAIRES.list();
+
+                            $( DOM.parent + ' *[data-compaires-id]').map(function( i, e )
+                            {
+                                $(e).removeClass('compaires-checked');
+                                var check = helpers.in_array( Number($(e).attr('data-compaires-id')), LIST, 'essence_id', false);
+                                if( check )
+                                {
+                                    $(e).addClass('compaires-checked');
+                                }
+                            });
+
+                            if (  Eva.sett.dom_cprCount !== false )
+                            {
+                                if( LIST.length > 0 )
+                                {
+                                    $( Eva.sett.dom_cprCount ).text( LIST.length );
+                                }
+                                else
+                                {
+                                    $( Eva.sett.dom_cprCount ).text( Eva.sett.dom_cprCount_empty );
+                                }
+                            }
+
+                        }
+                    }, 20);
+
+                },
+
+                // Добавить / Убрать из избранного
+                checkChange : function( id, type )
+                {
+
+                    var checked = $( DOM.parent + ' .event-compaires-check[data-compaires-id="'+id+'"]').hasClass('compaires-checked');
+                    if( checked !== false )
+                    {
+                        // Есть в сравнении = убрать его оттуда
+                        $( DOM.parent + ' .event-compaires-check[data-compaires-id="'+id+'"]').removeClass('compaires-checked');
+                        COMPAIRES.remove( id, function(){
+                            if( Ev.compaires )
+                            {
+                                Ev.compaires.update_list();
+                            }
+                        });
+                        COMPAIRES.updateCheckCompaires();
+                    }
+                    else
+                    {
+                        // Нет в сравнении = добавить его туда
+                        $( DOM.parent + ' .event-compaires-check[data-compaires-id="'+id+'"]').addClass('compaires-checked');
+                        COMPAIRES.add( type, id, function(){
+                            COMPAIRES.updateCheckCompaires();
+                        });
+                    }
+
+                    COMPAIRES.updateCompairesActive();
+
+                },
+
+                // Создание контейнера
+                create : function()
+                {
+
+                    if( $.cookie('compaires') === undefined )
+                    {
+                        $.cookie( 'compaires', '[]', {
+                            expires: 7,
+                            path: '/'
+                        });
+                    }
+                    this.LIST = $.cookie('compaires');
+                },
+
+                // Полчить список обьектов
+                list : function()
+                {
+
+                    this.create();
+
+                    var response = [];
+                    var ARRAY_LIST = $.parseJSON( this.LIST );
+
+                    if( ARRAY_LIST.length > 0 )
+                    {
+                        for (var key in ARRAY_LIST)
+                        {
+                            var val = ARRAY_LIST[key];
+                            var x = ( window.helpers._type_of(val) === 'object')?val:$.parseJSON(val);
+                            response.push(x);
+                        }
+                    }
+
+                    return response;
+                },
+
+                // Добавить обьект в избранное
+                add : function ( type, essence_id, callback )
+                {
+
+                    var callback = callback || false;
+                    this.create();
+
+                    var ARRAY_LIST = this.list();
+                    if( !window.helpers.in_array( essence_id.toString(), ARRAY_LIST, 'essence_id', false ) )
+                    {
+                        var t_ = window.helpers._convert_value({
+                            type : type,
+                            essence_id : essence_id
+                        });
+                        ARRAY_LIST.push( t_ );
+                    }
+
+                    $.cookie( 'compaires', window.helpers._convert_value( ARRAY_LIST ), {
+                        expires: 7,
+                        path: '/'
+                    });
+
+                    COMPAIRES.updateCheckCompaires();
+
+                    if( callback !== false )
+                    {
+                        callback( essence_id );
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
+                },
+
+                // Удалить обьект из избранного
+                remove : function ( essence_id, callback )
+                {
+                    var callback = callback || false;
+
+                    window.helpers.remove_array( essence_id, this.list(), 'essence_id', function( new_array_avorites ){
+                        $.cookie( 'compaires', window.helpers._convert_value( new_array_avorites ), {
+                            expires: 7,
+                            path: '/'
+                        });
+                    });
+
+                    if( callback !== false )
+                    {
+                        callback( essence_id );
+                    }
+                    else
+                    {
+                        return true;
+                    }
+
+                }
+
+            };
+
+            COMPAIRES.updateCompairesActive();
+            COMPAIRES.updateCheckCompaires();
+
+        };
+
+        // Создать CSS и загрузить его
+        render_css = function(){
             var sett = Eva.sett.render_css_setting;
 
             var responsive = sett.responsive;
@@ -1444,10 +2032,7 @@ if (typeof jQuery === 'undefined') {
             $( 'body' ).addClass('eva');
         };
 
-        // Запуск инициализации
     	init();
-
-        // Возвращение обекта
     	return this;
 
     };

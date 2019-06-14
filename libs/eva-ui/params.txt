@@ -1,0 +1,132 @@
+
+        // Отгрузка каркасов
+        getTplDownload : '/helper/get_tpl_data',
+        // Избранное :: Еллемент для окраски
+        dom_favoritesIcon : '.event-favorites-btn',
+        // Избранное :: Еллемент для вывода кол-ва эллементов в избранном
+        dom_fvrCount : '#countFavorites',
+        // Избранное :: Еллемент для вывода кол-ва эллементов в избранном( Если ноль )
+        dom_fvrCount_empty : '0',
+
+        // Избранное :: Еллемент для окраски
+        dom_compairesIcon : '.event-compaires-btn',
+        // Избранное :: Еллемент для вывода кол-ва эллементов в избранном
+        dom_cprCount : '#countCompaires',
+        // Избранное :: Еллемент для вывода кол-ва эллементов в избранном( Если ноль )
+        dom_cprCount_empty : '0',
+
+        // Корзина :: Еллемент для вывода кол-ва наименований
+        dom_cartCount : '.countShiping',
+        // Корзина :: Еллемент для вывода кол-ва наименований( Если ноль )
+        dom_cartCount_empty : '0',
+        // Корзина :: Еллемент для вывода кол-ва товаров
+        dom_cartCountProducts : false,
+        // Корзина :: Еллемент для вывода кол-ва товаров( Если ноль )
+        dom_cartCountProducts_empty : '0',
+        // Корзина :: Еллемент для вывода общей стоимости
+        dom_cartAllPrice : false,
+        // Корзина :: Еллемент для вывода общей стоимости( Если ноль )
+        dom_cartAllPrice_empty : '',
+
+        // Символика и обозначение валюты
+        cart_sumbol : 'руб.',
+        cart_current_sumbol : 'RUB',
+
+        // Название валюты [1,2,6]
+        cart_current : ['рубль', 'рубля', 'рублей'],
+
+        // Что сделать после того как товар был добавлен в корзину
+        callback_cart_added : function( params )
+        {
+            console.log('callback_cart_added', params);
+            helpers.alert( 'success', [
+                params.title, ' добавлен в спосок покупок в кол-ве:', params.item.qty, 'на сумму:', (params.item.summa / 100), window.EVA.cart_sumbol
+            ].join(' '));
+        },
+
+        // Что сделать после того как товар был добавлен в корзину
+        callback_cart_seted : function( params )
+        {
+            console.log('callback_cart_seted', params);
+            if( helpers.in_array( params.method.toString(), ['set', 'updateCount' ], false, false ) !== false )
+            {
+                helpers.alert('success', [
+                    'Для товара', params.item.title, 'установленно кол-во:', params.item.qty, 'на сумму:', (params.item.summa / 100), window.EVA.cart_sumbol
+                ].join(' '));
+            }
+
+            if( helpers.in_array( params.method.toString(), ['add'], false, false ) !== false )
+            {
+                helpers.alert('success', [
+                    params.item.title, 'добавлен. Установленно кол-во:', params.item.qty, 'на сумму:', (params.item.summa / 100), window.EVA.cart_sumbol
+                ].join(' ') );
+            }
+
+        },
+
+        // Что сделать после того как товар был удалён из корзины
+        callback_cart_removed : function( params )
+        {
+            console.log('callback_cart_removed', params);
+            helpers.alert('success', [
+                params.item.title, 'удалён из списка покупок'
+            ].join(' '));
+        },
+
+        // Что сделать после того как товар был удалён из корзины
+        callback_cart_all_removed : function( params )
+        {
+            console.log('callback_cart_all_removed', params);
+            helpers.alert('success', 'Список покупок - полностью очищен');
+        },
+
+        // Нужный функционал
+        plugins : ['events', 'configurations', 'tpl', 'cart', 'favorites', 'compaires'],
+
+        render_css : true,
+        render_css_setting : {
+
+            // Настройки файла стилей
+            params : {
+                all : '1',
+                param : []
+            },
+
+            // Адаптивная сетка
+            responsive : [
+                { w : '',       s : 'all'},
+                { w : '-xs-',   s : 'screen and (max-width:544px)'},
+                { w : '-sm-',   s : '(min-width:544px)'},
+                { w : '-md-',   s : '(min-width:768px)'},
+                { w : '-lg-',   s : '(min-width:992px)'},
+                { w : '-xl-',   s : '(min-width:1200px)'}
+            ],
+
+            // Настройка классов
+            classes : [
+                { name : 'px',    action : 'font-size: ',       min : 8, max : 70,      step_one_max : 1,     step_value : 1,   step_size : 1  },
+                { name : 'h',     action : 'height: ',          min : 0, max : 900,     step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'w',     action : 'width: ',           min : 0, max : 1200,    step_one_max : 30,    step_value : 1,   step_size : 10 },
+
+                { name : 'mih',   action : 'min-height: ',      min : 0, max : 900,     step_one_max : 10,    step_value : 1,   step_size : 10 },
+                { name : 'miw',   action : 'min-width: ',       min : 0, max : 1200,    step_one_max : 10,    step_value : 1,   step_size : 10 },
+
+                { name : 'mah',   action : 'max-height: ',      min : 0, max : 900,     step_one_max : 10,    step_value : 1,   step_size : 10 },
+                { name : 'maw',   action : 'max-width: ',       min : 0, max : 1200,    step_one_max : 10,    step_value : 1,   step_size : 10 },
+
+                { name : 'ma',    action : 'margin: ',          min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'mt',    action : 'margin-top: ',      min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'mb',    action : 'margin-bottom: ',   min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'ml',    action : 'margin-left: ',     min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'mr',    action : 'margin-right: ',    min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+
+                { name : 'pa',    action : 'padding: ',         min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'pt',    action : 'padding-top: ',     min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'pb',    action : 'padding-bottom: ',  min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'pl',    action : 'padding-left: ',    min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+                { name : 'pr',    action : 'padding-right: ',   min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 },
+
+                { name : 'lh',    action : 'line-height: ',     min : 0, max : 50,      step_one_max : 30,    step_value : 1,   step_size : 10 }
+            ]
+
+        }

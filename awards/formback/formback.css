@@ -1,0 +1,15 @@
+
+.fb_select select {
+    padding: 9px;
+    font-size: 15px;
+    font-weight: 300;
+}
+
+.fb_select::after {
+    position: absolute;
+    content: "\f0dc";
+    font-family: "FontAwesome";
+    margin-top: -31px;
+    right: 30px;
+    color: #d4d4d4;
+}
