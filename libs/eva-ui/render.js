@@ -632,9 +632,9 @@ if (typeof READY === 'undefined')
         // Режим разработки
         var debug_mode = function()
         {
-            
+
             // Кнопка перезапуска
-            $("body").append('<a class="btn btn-primary btn-sm px15 br3 pos-fixed b10 l10 c-white px15" data-role="eva-reload"><i class="fa fa-refresh"></i></a>')
+            $("body").append('<a class="btn zi9999 btn-primary btn-sm px15 br3 pos-fixed b10 l10 c-white px15" data-role="eva-reload"><i class="fa fa-refresh"></i></a>')
 
             // Что то изменилось в древе...
             $("body a[data-role=eva-reload]").on("click", function (e) {

@@ -94,6 +94,7 @@
         <script src="/libs/less-3.7.1/less.min.js" ></script>
 
         <!-- EVA UI -->
+        <script src="/libs/eva-ui/core.js"></script>
         <script src="/libs/eva-ui/render.js"></script>
         <script src="/libs/eva-ui/helper.js"></script>
         <script src="/libs/eva-ui/events.js"></script>
